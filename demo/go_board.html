@@ -1,0 +1,18 @@
+<html>
+<head>
+  <script src="../src/js/gamebuilder.js"></script>
+  <script src="../src/js/util/util.js"></script>
+  <script src="../src/js/games/games.js"></script>
+  <script src="../src/js/games/go/go.js"></script>
+</head>
+<body>
+
+  <div id='board'></div>
+
+  <script>
+    var board = new gamebuilder.games.go.Board();
+    board.display('board', '../data/images/go');
+  </script>
+
+</body>
+</html>
