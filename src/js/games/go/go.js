@@ -93,31 +93,32 @@ go.Board.prototype.create = function() {
   table.cellSpacing = 0;
   table.cellPadding = 0;
   table.style.border = '0';
-  for (var i = this.board_.length - 1; i >= 0; --i) {
+  for (var j = this.board_[0].length - 1; j >= 0; --j) {
     var row = table.insertRow(-1);
-    for (var j = 0; j < this.board_[i].length; ++j) {
+    for (var i = 0; i < this.board_.length; ++i) {
       // TODO: can we use the shorter version?
       // var cell = row.insertCell(0);
       var cell = document.createElement('td');
       var bg_image = '';
       // Prefix (upper/center/bottom)
-      if (i == this.board_.length - 1) {
+      if (j == this.board_[i].length - 1) {
         bg_image = 'upper-';
-      } else if (i == 0) {
+      } else if (j == 0) {
         bg_image = 'bottom-';
       } else {
         bg_image = 'center-';
       }
       // Suffix (left/middle/right)
-      if (j == 0) {
+      if (i == 0) {
         bg_image += 'left';
-      } else if (j == this.board_[i].length - 1) { 
+      } else if (i == this.board_.length - 1) {
         bg_image += 'right';
       } else {
         bg_image += 'middle';
       }
       bg_image += '.png';
       cell.style.backgroundImage = util.sprintf('url(%s/%s)', this.image_path_, bg_image);
+      // TODO: replace with CSS classes.
       cell.style.width = cell.style.height = '50px';
       cell.appendChild(this.imageForPiece_(this.board_[i][j]));
       row.appendChild(cell);
@@ -135,16 +136,27 @@ go.Board.prototype.create = function() {
  */
 go.Board.prototype.update = function(table) {
   // TODO: check that the table size matches the board size.
-  for (var r = 0, row; row = table.rows[r++]; /* increment in condition */) {
-    for (var c = 0, cell; cell = row.childNodes[c++]; /* inc. in condition */) {
+  if (this.board_.length != table.rows.length ||
+      this.board_[0].length != table.rows[0].childNodes.length) {
+    throw new Error(
+        util.sprintf('Incompatible sizes: board (%s x %s) vs. table (%s x %s)',
+                     this.board_.length, this.board_[0].length,
+                     table.rows.length, table.rows[0].childNodes.length));
+  }
 
-      var piece = this.board_[r][c];
-      if (util.isDefAndNotNull(piece)) {
-        cell.innerHTML = '';
-        cell.appendChild(this.imageForPiece_(piece));
-      } else {
-        cell.innerHTML = '';
+  for (var r = 0; r < table.rows.length; ++r) {
+    var row = table.rows[r];
+    for (var c = 0; c < row.childNodes.length; ++c) {
+      var cell = row.childNodes[c];
+      var piece = null;
+      var j = table.rows.length - r - 1;
+      try {
+        piece = this.board_[c][j];
+      } catch (e) {
+        throw new Error(util.sprintf('Invalid coords: (%s, %s)', c, j));
       }
+      cell.innerHTML = '';
+      cell.appendChild(this.imageForPiece_(piece));
     }
   }
 };

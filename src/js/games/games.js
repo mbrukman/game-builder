@@ -34,19 +34,10 @@ games.BoardMxN = function(m, n) {
 };
 
 /**
- * @param {number} n
- * @constructor
- */
-games.BoardNxN = function(n) {
-  games.BoardMxN.call(this, n, n);
-};
-util.inherits(games.BoardNxN, games.BoardMxN);
-
-/**
  * @param {Piece} piece
  * @param {?} pos
  */
-games.BoardNxN.prototype.placePiece = function(piece, pos) {
+games.BoardMxN.prototype.placePiece = function(piece, pos) {
   try {
     var coords = games.stringPosToCoords(pos);
     this.board_[coords[0]][coords[1]] = piece;
@@ -54,6 +45,15 @@ games.BoardNxN.prototype.placePiece = function(piece, pos) {
     throw new Error(util.sprintf('Invalid coords: (%s, %s)', coords[0], coords[1]));
   }
 };
+
+/**
+ * @param {number} n
+ * @constructor
+ */
+games.BoardNxN = function(n) {
+  games.BoardMxN.call(this, n, n);
+};
+util.inherits(games.BoardNxN, games.BoardMxN);
 
 /**
  * Given a string board position, converts it into an ordered pair (x, y),
@@ -82,6 +82,6 @@ games.stringPosToCoords = function(name) {
  */
 games.coordsToStringPos = function(coords) {
   return util.sprintf('%s%s',
-                      String.fromCharCode('a'.charCodeAt(0) + coords[1]),
-                      coords[0] + 1);
+                      String.fromCharCode('a'.charCodeAt(0) + coords[0]),
+                      coords[1] + 1);
 };
