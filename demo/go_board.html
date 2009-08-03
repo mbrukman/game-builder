@@ -10,8 +10,35 @@
   <div id='board'></div>
 
   <script>
-    var board = new gamebuilder.games.go.Board();
-    board.display('board', '../data/images/go');
+    var go = gamebuilder.games.go;
+    var image_path = '../data/images/go';
+    var board = new go.Board(image_path);
+
+    // Place random pieces.
+    for (var i = 0; i < 256; ++i) {
+      var piece = null;
+      var random = Math.random();
+      if (random < 0.33) {
+        piece = new go.Piece(go.PieceColor.BLACK);
+      } else if (random < 0.66) {
+        piece = new go.Piece(go.PieceColor.WHITE);
+      }
+      if (gamebuilder.util.isDefAndNotNull(piece)) {
+        // Create random coords and place piece.
+        var x = Math.floor(Math.random() * 19);
+        var y = Math.floor(Math.random() * 19);
+        //board.placePiece(piece, games.coordsToStringPos([x, y]));
+      }
+    }
+
+    // Create and display the board.
+    var visible_board = board.create(image_path);
+    document.getElementById('board').appendChild(visible_board);
+
+    board.placePieceColor(go.PieceColor.BLACK, 'e4');
+    board.placePieceColor(go.PieceColor.WHITE, 'h4');
+    board.placePieceColor(go.PieceColor.BLACK, 'j4');
+    board.update(visible_board);
   </script>
 
 </body>

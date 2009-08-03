@@ -13,6 +13,7 @@
 // limitations under the License.
 
 var games = gamebuilder.games = {};
+var util = gamebuilder.util;
 
 /**
  * @param {number} m
@@ -39,10 +40,19 @@ games.BoardMxN = function(m, n) {
 games.BoardNxN = function(n) {
   games.BoardMxN.call(this, n, n);
 };
-gamebuilder.util.inherits(games.BoardNxN, games.BoardMxN);
+util.inherits(games.BoardNxN, games.BoardMxN);
 
-games.BoardNxN.prototype.placePiece = function(piece, coords) {
-  this.board_[coords[0]][coords[1]] = piece;
+/**
+ * @param {Piece} piece
+ * @param {?} pos
+ */
+games.BoardNxN.prototype.placePiece = function(piece, pos) {
+  try {
+    var coords = games.stringPosToCoords(pos);
+    this.board_[coords[0]][coords[1]] = piece;
+  } catch (e) {
+    throw new Error(util.sprintf('Invalid coords: (%s, %s)', coords[0], coords[1]));
+  }
 };
 
 /**
@@ -57,7 +67,7 @@ games.BoardNxN.prototype.placePiece = function(piece, coords) {
  */
 games.stringPosToCoords = function(name) {
   if (name.length < 2) {
-    throw new Exception('Invalid format of coordinates: ' + name)
+    throw new Error('Invalid format of coordinates: ' + name)
   }
   return [name.charCodeAt(0) - 'a'.charCodeAt(0),
           name.substr(1, name.length) - 1];
@@ -71,5 +81,7 @@ games.stringPosToCoords = function(name) {
  * @param {string} A lower-case string position such as 'i5'.
  */
 games.coordsToStringPos = function(coords) {
-  return String.fromCharCode('a'.charCodeAt(0) + coords[1]) + (coords[0] + 1);
+  return util.sprintf('%s%s',
+                      String.fromCharCode('a'.charCodeAt(0) + coords[1]),
+                      coords[0] + 1);
 };
