@@ -14,10 +14,18 @@
 
 var util = gamebuilder.util = {};
 
+/**
+ * @param {Object?} obj
+ * @return {boolean} Whether obj is defined.
+ */
 util.isDef = function(obj) {
   return (typeof obj != 'undefined');
 };
 
+/**
+ * @param {Object?} obj
+ * @return {boolean} Whether obj is defined and not null.
+ */
 util.isDefAndNotNull = function(obj) {
   return util.isDef(obj) && (obj != null);
 };
@@ -33,4 +41,22 @@ util.inherits = function(derived, base) {
   for (proto in base.prototype) {
     derived.prototype[proto] = base.prototype[proto];
   }
+};
+
+/**
+ * @param {string} fmt
+ * @return {string} Formatted string with argument substitution.
+ */
+util.sprintf = function(fmt) {
+  for (var i = 1; i < arguments.length; ++i) {
+    if (util.isDefAndNotNull(fmt.match('%s'))) {
+      fmt = fmt.replace(/%s/, arguments[i]);
+    } else {
+      throw new Error('Too many positional arguments to fill format string: ' + fmt);
+    }
+  }
+  if (util.isDefAndNotNull(fmt.match('%s'))) {
+    throw new Error('Not enough positional arguments to fill in format string: ' + fmt);
+  }
+  return fmt;
 };
