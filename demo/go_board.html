@@ -1,5 +1,6 @@
 <html>
 <head>
+  <link href="../data/css/go.css" rel="stylesheet">
   <script src="../src/js/gamebuilder.js"></script>
   <script src="../src/js/util/util.js"></script>
   <script src="../src/js/games/games.js"></script>
@@ -10,34 +11,29 @@
   <div id='board'></div>
 
   <script>
+    function placeRandomPieces(board, num_pieces) {
+      for (var i = 0; i < num_pieces; ++i) {
+        var color = (Math.random() < 0.5) ?
+            go.PieceColor.BLACK : go.PieceColor.WHITE;
+        var x = Math.floor(Math.random() * 19);
+        var y = Math.floor(Math.random() * 19);
+        board.placePieceColor(color, games.coordsToStringPos([x, y]));
+      }
+    }
+
     var go = gamebuilder.games.go;
     var image_path = '../data/images/go';
     var board = new go.Board(image_path);
 
-    // Place random pieces.
-    for (var i = 0; i < 256; ++i) {
-      var piece = null;
-      var random = Math.random();
-      if (random < 0.33) {
-        piece = new go.Piece(go.PieceColor.BLACK);
-      } else if (random < 0.66) {
-        piece = new go.Piece(go.PieceColor.WHITE);
-      }
-      if (gamebuilder.util.isDefAndNotNull(piece)) {
-        // Create random coords and place piece.
-        var x = Math.floor(Math.random() * 19);
-        var y = Math.floor(Math.random() * 19);
-        //board.placePiece(piece, games.coordsToStringPos([x, y]));
-      }
-    }
+    placeRandomPieces(board, 0);
 
     // Create and display the board.
     var visible_board = board.create(image_path);
     document.getElementById('board').appendChild(visible_board);
 
-    board.placePieceColor(go.PieceColor.BLACK, 'e4');
-    board.placePieceColor(go.PieceColor.WHITE, 'h4');
-    board.placePieceColor(go.PieceColor.BLACK, 'j4');
+    board.placePieceColor(go.PieceColor.BLACK, 'a2');
+    board.placePieceColor(go.PieceColor.WHITE, 'b3');
+    board.placePieceColor(go.PieceColor.BLACK, 'c4');
     board.update(visible_board);
   </script>
 
