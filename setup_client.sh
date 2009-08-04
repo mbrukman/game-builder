@@ -1,3 +1,5 @@
+#!/bin/bash
+#
 # Copyright 2009 Google Inc.
 # 
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,15 +14,22 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-# .gclient configuration file for GameBuilder.
+################################################################################
+#
+# Exports the minimum parts of JsUnit from SVN that we need to run Javascript
+# tests.
 
-solutions = [
-  { 'name'        : 'gamebuilder',
-    'url'         : 'https://gamebuilder.googlecode.com/svn/trunk',
-    'custom_deps' : {},
-  },
-  { 'name'        : 'gamebuilder/third_party/jsunit',
-    'url'         : 'http://jsunit.svn.sourceforge.net/svnroot/jsunit/trunk/jsunit@1338',
-    'custom_deps' : {},
-  },
-]
+cd third_party
+
+# Grab relevant parts of JsUnit that we need for testing.
+JSUNIT_SVN_BASE="http://jsunit.svn.sourceforge.net/svnroot/jsunit/trunk/jsunit"
+JSUNIT_SVN_REV="1338"
+JSUNIT_PARTS="app testRunner.html"
+
+if [[ ! -e jsunit ]]; then
+  mkdir jsunit
+  cd jsunit
+  for part in ${JSUNIT_PARTS}; do
+    svn export ${JSUNIT_SVN_BASE}/${part}@${JSUNIT_SVN_REV}
+  done
+fi
