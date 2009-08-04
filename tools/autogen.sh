@@ -13,6 +13,15 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+#
+################################################################################
+#
+# Outputs a header file comment, with the appropriate comments based on the
+# language, as deduced from the extension of the file.
+#
+# Sample usage:
+#   autogen.sh file.js
+#   autogen.sh file.py
 
 LICENSE="$(dirname $0)/apache-2.0-header.txt"
 
