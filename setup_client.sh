@@ -19,17 +19,22 @@
 # Exports the minimum parts of JsUnit from SVN that we need to run Javascript
 # tests.
 
+if [[ ! -e third_party ]]; then
+  mkdir third_party
+fi
 cd third_party
 
 # Grab relevant parts of JsUnit that we need for testing.
 JSUNIT_SVN_BASE="http://jsunit.svn.sourceforge.net/svnroot/jsunit/trunk/jsunit"
 JSUNIT_SVN_REV="1338"
-JSUNIT_PARTS="app testRunner.html"
+JSUNIT_PARTS="app images lib testRunner.html"
 
 if [[ ! -e jsunit ]]; then
   mkdir jsunit
-  cd jsunit
-  for part in ${JSUNIT_PARTS}; do
-    svn export ${JSUNIT_SVN_BASE}/${part}@${JSUNIT_SVN_REV}
-  done
 fi
+cd jsunit
+for part in ${JSUNIT_PARTS}; do
+  if [[ ! -e ${part} ]]; then
+    svn export ${JSUNIT_SVN_BASE}/${part}@${JSUNIT_SVN_REV}
+  fi
+done
