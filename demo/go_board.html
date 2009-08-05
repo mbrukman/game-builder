@@ -11,6 +11,9 @@
   <div id='board'></div>
 
   <script>
+    var games = gamebuilder.games;
+    var go = games.go;
+
     function placeRandomPieces(board, num_pieces) {
       for (var i = 0; i < num_pieces; ++i) {
         var color = (Math.random() < 0.5) ?
@@ -20,21 +23,31 @@
         board.placePieceColor(color, games.coordsToStringPos([x, y]));
       }
     }
+    /**
+     * @param {gameboard.games.go.Board} board The board controller.
+     * @param {HTMLTableElement} table The visible board.
+     * @param {Array.<number>} coords Board-relative coordinates.
+     */
+    function placePiece(board, table, coords) {
+      var pos = games.coordsToStringPos(coords);
+      board.placeColorAtPos(gamebuilder.games.go.PieceColor.WHITE, pos);
+      board.update(table);
+    }
 
-    var go = gamebuilder.games.go;
     var image_path = '../data/images/go';
     var board = new go.Board(image_path);
 
-    placeRandomPieces(board, 0);
-
     // Create and display the board.
-    var visible_board = board.create(image_path);
-    document.getElementById('board').appendChild(visible_board);
+    var table = board.create(image_path);
+    document.getElementById('board').appendChild(table);
 
-    board.placePieceColor(go.PieceColor.BLACK, 'a2');
-    board.placePieceColor(go.PieceColor.WHITE, 'b3');
-    board.placePieceColor(go.PieceColor.BLACK, 'c4');
-    board.update(visible_board);
+    board.placeColorAtPos(go.PieceColor.BLACK, 'a2');
+    board.placeColorAtPos(go.PieceColor.WHITE, 'b3');
+    board.placeColorAtPos(go.PieceColor.BLACK, 'c4');
+
+    board.update(table);
+
+    board.bindEmptyCells(table, placePiece);
   </script>
 
 </body>

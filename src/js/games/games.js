@@ -37,13 +37,34 @@ games.BoardMxN = function(m, n) {
  * @param {Piece} piece
  * @param {?} pos
  */
-games.BoardMxN.prototype.placePiece = function(piece, pos) {
-  try {
-    var coords = games.stringPosToCoords(pos);
-    this.board_[coords[0]][coords[1]] = piece;
-  } catch (e) {
-    throw new Error(util.sprintf('Invalid coords: (%s, %s)', coords[0], coords[1]));
+games.BoardMxN.prototype.placePieceAtPos = function(piece, pos) {
+  this.placePieceAtCoords(piece, games.stringPosToCoords(pos));
+};
+
+games.BoardMxN.prototype.validateCoords = function(coords) {
+  if (coords[0] < 0 || this.board_.length <= coords[0] ||
+      coords[1] < 0 || this.board_[0].length <= coords[1]) {
+    throw new Error(util.sprintf('Invalid coords (%s, %s) for board (%s x %s)',
+                                 coords[0], coords[1], this.board_.length,
+                                 this.board_[0].length));
   }
+};
+
+/**
+ * @param {Piece} piece
+ * @param {Array.<number>} coords A 2-element array that specifies the
+ *     board-relative coordinates.
+ */
+games.BoardMxN.prototype.placePieceAtCoords = function(piece, coords) {
+  // Will throw an error if invalid.
+  this.validateCoords(coords);
+  this.board_[coords[0]][coords[1]] = piece;
+}
+
+games.BoardMxN.prototype.getPieceAtCoords = function(coords) {
+  // Will throw an error if invalid.
+  this.validateCoords(coords);
+  return this.board_[coords[0]][coords[1]];
 };
 
 /**

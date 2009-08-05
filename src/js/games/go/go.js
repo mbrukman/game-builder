@@ -43,13 +43,8 @@ util.inherits(go.BoardNxN, games.BoardNxN);
  * @param {go.PieceColor} color
  * @param {string} location, e.g. 'c10' or 'f9'
  */
-go.BoardNxN.prototype.placePieceColor = function(color, pos) {
-  try {
-    var coords = games.stringPosToCoords(pos);
-    this.board_[coords[0]][coords[1]] = new go.Piece(color);
-  } catch (e) {
-    throw new Error(util.sprintf('Invalid coords: (%s, %s)', coords[0], coords[1]));
-  }
+go.BoardNxN.prototype.placeColorAtPos = function(color, pos) {
+  this.placePieceAtPos(new go.Piece(color), pos);
 };
 
 // ==============================================================================
@@ -61,25 +56,30 @@ go.BoardNxN.prototype.placePieceColor = function(color, pos) {
  * @constructor
  */
 go.Board = function(image_path) {
-  games.BoardNxN.call(this, 19);
+  games.BoardNxN.call(this, 7);
   /** @type {string} */
-  this. image_path_ = image_path;
+  this.image_path_ = image_path;
 };
 util.inherits(go.Board, go.BoardNxN);
 
-go.Board.prototype.imageForPiece_ = function(piece) {
-  var image = document.createElement('img');
+go.Board.prototype.imagePathForPiece_ = function(piece) {
   if (util.isDefAndNotNull(piece)) {
     if (piece.color_ == go.PieceColor.BLACK) {
-      image.src = util.sprintf('%s/black.png', this.image_path_);
+      return util.sprintf('%s/black.png', this.image_path_);
     } else if (piece.color_ == go.PieceColor.WHITE) {
-      image.src = util.sprintf('%s/white.png', this.image_path_);
+      return util.sprintf('%s/white.png', this.image_path_);
     } else {
       throw new Error('Invalid color of piece: ' + piece.color_);
     }
   } else {
-    image.src = util.sprintf('%s/clear.png', this.image_path_);
+    return util.sprintf('%s/clear.png', this.image_path_);
   }
+};
+
+go.Board.prototype.imageForPiece_ = function(piece) {
+  var image = document.createElement('img');
+  image.src = this.imagePathForPiece_(piece);
+  image.style.width = image.style.height = '50px';
   return image;
 };
 
@@ -129,7 +129,21 @@ go.Board.prototype.create = function() {
 };
 
 /**
+ * Converts the coordinates on the visible table to the underlying go.Board
+ * object indices.
  *
+ * @param {Array.<number>} table_coords Coordinates relative to the visible
+ *     table.
+ */
+go.Board.prototype.tableToBoardCoords = function(table_coords) {
+  var row = table_coords[0];
+  var col = table_coords[1]
+  return [col, this.board_.length - row - 1];
+};
+
+/**
+ * Updates the displayed table to reflect the underlying board, by adding or
+ * removing pieces appropriately.
  *
  * @param {HTMLTableElement} table The table containing the Go board to be
  * updated.  It must match in size the underlying board that this class owns.
@@ -148,15 +162,40 @@ go.Board.prototype.update = function(table) {
     var row = table.rows[r];
     for (var c = 0; c < row.childNodes.length; ++c) {
       var cell = row.childNodes[c];
-      var piece = null;
-      var j = table.rows.length - r - 1;
-      try {
-        piece = this.board_[c][j];
-      } catch (e) {
-        throw new Error(util.sprintf('Invalid coords: (%s, %s)', c, j));
+      var image = cell.childNodes[0];
+      var piece = this.getPieceAtCoords(this.tableToBoardCoords([r, c]));
+
+      if (image.src != this.imagePathForPiece_(piece)) {
+        image.src = this.imagePathForPiece_(piece);
       }
-      cell.innerHTML = '';
-      cell.appendChild(this.imageForPiece_(piece));
+    }
+  }
+};
+
+function createImageClickClosure(callback, row, col) {
+  return function() {
+    callback(board, table, board.tableToBoardCoords([row, col]));
+  };
+}
+
+/**
+ * Binds the supplied closure to be run on a click on any empty cell on the board.
+ *
+ * @param {HTMLTableElement} table The visible board.
+ * @param {Function} callback A function that accepts the board and location of
+ *     the piece that was clicked on.
+ */
+go.Board.prototype.bindEmptyCells = function(table, callback) {
+  var board = this;
+  for (var r = 0; r < table.rows.length; ++r) {
+    var row = table.rows[r];
+    for (var c = 0; c < row.childNodes.length; ++c) {
+      var cell = row.childNodes[c];
+      var image = cell.childNodes[0];
+      var coords = this.tableToBoardCoords([r, c]);
+      if (gamebuilder.util.isNotDefOrNull(this.getPieceAtCoords(coords))) {
+        image.onclick = createImageClickClosure(callback, r, c);
+      }
     }
   }
 };
