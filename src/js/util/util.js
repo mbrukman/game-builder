@@ -30,6 +30,10 @@ util.isDefAndNotNull = function(obj) {
   return util.isDef(obj) && (obj != null);
 };
 
+util.isNotDefOrNull = function(obj) {
+  return (typeof obj == 'undefined') || (obj == null);
+};
+
 /**
  * Copies all prototype definitions from {@code base} to {@code derived}.
  * Discussion: http://www.crockford.com/javascript/inheritance.html .
