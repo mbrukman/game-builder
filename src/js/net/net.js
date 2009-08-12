@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-var net = gamebuilder.net = {};
+gamebuilder.net = {};
 
 /**
  * A cross-browser implementation of XMLHttpRequest.
@@ -20,7 +20,7 @@ var net = gamebuilder.net = {};
  * @return {XMLHttpRequest} an XMLHttpRequest object if this browser supports
  *     it; otherwise, returns null.
  */
-net.xmlHttpRequest = function() {
+gamebuilder.net.xmlHttpRequest = function() {
   var request = null;
   try {
     // Mozilla, Firefox, and recent IE versions support this approach.

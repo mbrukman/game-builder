@@ -12,15 +12,14 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-var games = gamebuilder.games = {};
-var util = gamebuilder.util;
+gamebuilder.games = {};
 
 /**
  * @param {number} m
  * @param {number} n
  * @constructor
  */
-games.BoardMxN = function(m, n) {
+gamebuilder.games.BoardMxN = function(m, n) {
   /**
    * @type {Array.<Array.<?>>}
    */
@@ -37,16 +36,16 @@ games.BoardMxN = function(m, n) {
  * @param {Piece} piece
  * @param {?} pos
  */
-games.BoardMxN.prototype.placePieceAtPos = function(piece, pos) {
-  this.placePieceAtCoords(piece, games.stringPosToCoords(pos));
+gamebuilder.games.BoardMxN.prototype.placePieceAtPos = function(piece, pos) {
+  this.placePieceAtCoords(piece, gamebuilder.games.stringPosToCoords(pos));
 };
 
-games.BoardMxN.prototype.validateCoords = function(coords) {
+gamebuilder.games.BoardMxN.prototype.validateCoords = function(coords) {
   if (coords[0] < 0 || this.board_.length <= coords[0] ||
       coords[1] < 0 || this.board_[0].length <= coords[1]) {
-    throw new Error(util.sprintf('Invalid coords (%s, %s) for board (%s x %s)',
-                                 coords[0], coords[1], this.board_.length,
-                                 this.board_[0].length));
+    throw new Error(gamebuilder.util.sprintf(
+        'Invalid coords (%s, %s) for board (%s x %s)',
+        coords[0], coords[1], this.board_.length, this.board_[0].length));
   }
 };
 
@@ -55,13 +54,13 @@ games.BoardMxN.prototype.validateCoords = function(coords) {
  * @param {Array.<number>} coords A 2-element array that specifies the
  *     board-relative coordinates.
  */
-games.BoardMxN.prototype.placePieceAtCoords = function(piece, coords) {
+gamebuilder.games.BoardMxN.prototype.placePieceAtCoords = function(piece, coords) {
   // Will throw an error if invalid.
   this.validateCoords(coords);
   this.board_[coords[0]][coords[1]] = piece;
 }
 
-games.BoardMxN.prototype.getPieceAtCoords = function(coords) {
+gamebuilder.games.BoardMxN.prototype.getPieceAtCoords = function(coords) {
   // Will throw an error if invalid.
   this.validateCoords(coords);
   return this.board_[coords[0]][coords[1]];
@@ -71,10 +70,11 @@ games.BoardMxN.prototype.getPieceAtCoords = function(coords) {
  * @param {number} n
  * @constructor
  */
-games.BoardNxN = function(n) {
-  games.BoardMxN.call(this, n, n);
+gamebuilder.games.BoardNxN = function(n) {
+  gamebuilder.games.BoardMxN.call(this, n, n);
 };
-util.inherits(games.BoardNxN, games.BoardMxN);
+gamebuilder.util.inherits(gamebuilder.games.BoardNxN,
+                          gamebuilder.games.BoardMxN);
 
 /**
  * Given a string board position, converts it into an ordered pair (x, y),
@@ -86,7 +86,7 @@ util.inherits(games.BoardNxN, games.BoardMxN);
  * @param name A string position such as "j10".
  * @return {Array<number>} Array of 2 ints representing the position.
  */
-games.stringPosToCoords = function(name) {
+gamebuilder.games.stringPosToCoords = function(name) {
   if (name.length < 2) {
     throw new Error('Invalid format of coordinates: ' + name)
   }
@@ -101,8 +101,8 @@ games.stringPosToCoords = function(name) {
  *     on the board, implementation-specific; not user-visible.
  * @param {string} A lower-case string position such as 'i5'.
  */
-games.coordsToStringPos = function(coords) {
-  return util.sprintf('%s%s',
+gamebuilder.games.coordsToStringPos = function(coords) {
+  return gamebuilder.util.sprintf('%s%s',
                       String.fromCharCode('a'.charCodeAt(0) + coords[0]),
                       coords[1] + 1);
 };

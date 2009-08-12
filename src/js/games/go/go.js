@@ -12,11 +12,9 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-var util = gamebuilder.util;
-var games = gamebuilder.games;
-var go = games.go = {};
+gamebuilder.games.go = {};
 
-go.PieceColor = {
+gamebuilder.games.go.PieceColor = {
   BLACK: 0,
   WHITE: 1
 };
@@ -25,7 +23,7 @@ go.PieceColor = {
  * @constructor
  * @param {go.PieceColor} color
  */
-go.Piece = function(color) {
+gamebuilder.games.go.Piece = function(color) {
   /** @type {go.PieceColor} */
   this.color_ = color;
 };
@@ -33,18 +31,19 @@ go.Piece = function(color) {
 /**
  * @constructor
  */
-go.BoardNxN = function() {
+gamebuilder.games.go.BoardNxN = function() {
 };
-util.inherits(go.BoardNxN, games.BoardNxN);
+gamebuilder.util.inherits(gamebuilder.games.go.BoardNxN,
+                          gamebuilder.games.BoardNxN);
 
 /**
- * 
+ * Places a new piece with a given color at the specified position.
  *
  * @param {go.PieceColor} color
  * @param {string} location, e.g. 'c10' or 'f9'
  */
-go.BoardNxN.prototype.placeColorAtPos = function(color, pos) {
-  this.placePieceAtPos(new go.Piece(color), pos);
+gamebuilder.games.go.BoardNxN.prototype.placeColorAtPos = function(color, pos) {
+  this.placePieceAtPos(new gamebuilder.games.go.Piece(color), pos);
 };
 
 // ==============================================================================
@@ -55,28 +54,29 @@ go.BoardNxN.prototype.placeColorAtPos = function(color, pos) {
  * @param {string} image_path
  * @constructor
  */
-go.Board = function(image_path) {
-  games.BoardNxN.call(this, 7);
+gamebuilder.games.go.Board = function(image_path) {
+  gamebuilder.games.BoardNxN.call(this, 19);
   /** @type {string} */
   this.image_path_ = image_path;
 };
-util.inherits(go.Board, go.BoardNxN);
+gamebuilder.util.inherits(gamebuilder.games.go.Board,
+                          gamebuilder.games.go.BoardNxN);
 
-go.Board.prototype.imagePathForPiece_ = function(piece) {
-  if (util.isDefAndNotNull(piece)) {
-    if (piece.color_ == go.PieceColor.BLACK) {
-      return util.sprintf('%s/black.png', this.image_path_);
-    } else if (piece.color_ == go.PieceColor.WHITE) {
-      return util.sprintf('%s/white.png', this.image_path_);
+gamebuilder.games.go.Board.prototype.imagePathForPiece_ = function(piece) {
+  if (gamebuilder.util.isDefAndNotNull(piece)) {
+    if (piece.color_ == gamebuilder.games.go.PieceColor.BLACK) {
+      return gamebuilder.util.sprintf('%s/black.png', this.image_path_);
+    } else if (piece.color_ == gamebuilder.games.go.PieceColor.WHITE) {
+      return gamebuilder.util.sprintf('%s/white.png', this.image_path_);
     } else {
       throw new Error('Invalid color of piece: ' + piece.color_);
     }
   } else {
-    return util.sprintf('%s/clear.png', this.image_path_);
+    return gamebuilder.util.sprintf('%s/clear.png', this.image_path_);
   }
 };
 
-go.Board.prototype.imageForPiece_ = function(piece) {
+gamebuilder.games.go.Board.prototype.imageForPiece_ = function(piece) {
   var image = document.createElement('img');
   image.src = this.imagePathForPiece_(piece);
   image.style.width = image.style.height = '50px';
@@ -88,7 +88,7 @@ go.Board.prototype.imageForPiece_ = function(piece) {
  *
  * @return {HTMLTableElement} The table containing the contents of the go board.
  */
-go.Board.prototype.create = function() {
+gamebuilder.games.go.Board.prototype.create = function() {
   var table = document.createElement('table');
   table.cellSpacing = 0;
   table.cellPadding = 0;
@@ -117,7 +117,8 @@ go.Board.prototype.create = function() {
         bg_image += 'middle';
       }
       bg_image += '.png';
-      cell.style.backgroundImage = util.sprintf('url(%s/%s)', this.image_path_, bg_image);
+      cell.style.backgroundImage =
+          gamebuilder.util.sprintf('url(%s/%s)', this.image_path_, bg_image);
       // TODO: replace with CSS classes.
       cell.style.width = cell.style.height = '50px';
       cell.appendChild(this.imageForPiece_(this.board_[i][j]));
@@ -129,13 +130,13 @@ go.Board.prototype.create = function() {
 };
 
 /**
- * Converts the coordinates on the visible table to the underlying go.Board
- * object indices.
+ * Converts the coordinates on the visible table to the underlying
+ * gamebuilder.games.go.Board object indices.
  *
  * @param {Array.<number>} table_coords Coordinates relative to the visible
  *     table.
  */
-go.Board.prototype.tableToBoardCoords = function(table_coords) {
+gamebuilder.games.go.Board.prototype.tableToBoardCoords = function(table_coords) {
   var row = table_coords[0];
   var col = table_coords[1]
   return [col, this.board_.length - row - 1];
@@ -148,14 +149,15 @@ go.Board.prototype.tableToBoardCoords = function(table_coords) {
  * @param {HTMLTableElement} table The table containing the Go board to be
  * updated.  It must match in size the underlying board that this class owns.
  */
-go.Board.prototype.update = function(table) {
+gamebuilder.games.go.Board.prototype.update = function(table) {
   // TODO: check that the table size matches the board size.
   if (this.board_.length != table.rows.length ||
       this.board_[0].length != table.rows[0].childNodes.length) {
     throw new Error(
-        util.sprintf('Incompatible sizes: board (%s x %s) vs. table (%s x %s)',
-                     this.board_.length, this.board_[0].length,
-                     table.rows.length, table.rows[0].childNodes.length));
+        gamebuilder.util.sprintf(
+            'Incompatible sizes: board (%s x %s) vs. table (%s x %s)',
+            this.board_.length, this.board_[0].length,
+            table.rows.length, table.rows[0].childNodes.length));
   }
 
   for (var r = 0; r < table.rows.length; ++r) {
@@ -185,7 +187,8 @@ function createImageClickClosure(callback, row, col) {
  * @param {Function} callback A function that accepts the board and location of
  *     the piece that was clicked on.
  */
-go.Board.prototype.bindEmptyCells = function(table, callback) {
+gamebuilder.games.go.Board.prototype.bindEmptyCells = function(table,
+                                                               callback) {
   var board = this;
   for (var r = 0; r < table.rows.length; ++r) {
     var row = table.rows[r];
@@ -207,10 +210,11 @@ go.Board.prototype.bindEmptyCells = function(table, callback) {
 /**
  * @constructor
  */
-go.Board13 = function() {
-  games.BoardNxN.call(this, 13);
+gamebuilder.games.go.Board13 = function() {
+  gamebuilder.games.BoardNxN.call(this, 13);
 };
-util.inherits(go.Board13, go.BoardNxN);
+gamebuilder.util.inherits(gamebuilder.games.go.Board13,
+                          gamebuilder.games.go.BoardNxN);
 
 // ==============================================================================
 // 9x9 Go board
@@ -219,7 +223,8 @@ util.inherits(go.Board13, go.BoardNxN);
 /**
  * @constructor
  */
-go.Board9 = function() {
-  games.BoardNxN.call(this, 9);
+gamebuilder.games.go.Board9 = function() {
+  gamebuilder.games.BoardNxN.call(this, 9);
 };
-util.inherits(go.Board9, go.BoardNxN);
+gamebuilder.util.inherits(gamebuilder.games.go.Board9,
+                          gamebuilder.games.go.BoardNxN);
