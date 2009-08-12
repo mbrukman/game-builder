@@ -23,6 +23,9 @@
 #   autogen.sh file.js
 #   autogen.sh file.py
 
+set -o errexit
+set -o nounset
+
 LICENSE="$(dirname $0)/apache-2.0-header.txt"
 
 function printLicenseWithYear() {
@@ -45,19 +48,26 @@ fi
 case $1 in
 
   *.js)
-    printLicenseNonHashComment "// " ;;
+    printLicenseNonHashComment "// "
+    ;;
 
   *.py)
     echo "#!/usr/bin/python"
     echo "#"
-    printLicenseHashComment ;;
+    printLicenseHashComment
+    ;;
 
   *.sh)
     echo "#!/bin/bash"
     echo "#"
-    printLicenseHashComment ;;
+    printLicenseHashComment
+    echo
+    echo "set -o errexit"
+    echo "set -o nounset"
+    ;;
 
   *)
-    echo "File extension not recognized." ;;
+    echo "File extension not recognized."
+    ;;
 
 esac
