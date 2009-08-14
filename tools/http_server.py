@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/python2.4
 #
 # Copyright 2009 Google Inc.
 #
@@ -104,8 +104,11 @@ class RequestHandler(BaseHTTPRequestHandler):
     self.wfile.write('File not found')
 
   def do_GET(self):
+    # urlparse() returns a tuple (scheme, netloc, path, params, query, fragment).
+    # in Python 2.5+, we can use named attributes, but in versions prior to
+    # that, only numerical indexes are supported.
     url = urlparse(self.path)
-    joined_path = os.sep.join([options.document_root, url.path])
+    joined_path = os.sep.join([options.document_root, url[2]])
     real_path = os.path.realpath(joined_path)
     if real_path.find(options.document_root) != 0 or \
         not os.path.exists(real_path) or \
