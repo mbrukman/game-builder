@@ -52,7 +52,7 @@ case $1 in
     ;;
 
   *.py)
-    echo "#!/usr/bin/python"
+    echo "#!/usr/bin/python2.4"
     echo "#"
     printLicenseHashComment
     ;;

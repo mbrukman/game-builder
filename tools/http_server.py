@@ -105,7 +105,7 @@ class RequestHandler(BaseHTTPRequestHandler):
 
   def do_GET(self):
     # urlparse() returns a tuple (scheme, netloc, path, params, query, fragment).
-    # in Python 2.5+, we can use named attributes, but in versions prior to
+    # In Python 2.5+, we can use named attributes, but in versions prior to
     # that, only numerical indexes are supported.
     url = urlparse(self.path)
     joined_path = os.sep.join([options.document_root, url[2]])
@@ -132,6 +132,7 @@ def main():
     server.serve_forever()
   except KeyboardInterrupt:
     server.socket.close()
+
 
 if __name__ == '__main__':
     main()
