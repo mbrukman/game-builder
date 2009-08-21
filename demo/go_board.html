@@ -15,7 +15,7 @@
   <table border=0>
   <tr>
     <td><div id='board'></div></td>
-    <td>Keys: 
+    <td>Keys:
       <ul>
       <li><b>b</b> - place black pieces</li>
       <li><b>w</b> - place white pieces</li>
@@ -72,6 +72,13 @@
       updateNextPiece();
     }
 
+    function createColorChangeClosure(color) {
+      return function() {
+        currentColor = color;
+        updateNextPiece();
+      };
+    }
+
     /**
      * Handle key presses from the user.
      */
@@ -101,6 +108,7 @@
         piece = new go.Piece(color);
       }
       var img = board.imageForPiece(piece);
+      img.onclick = createColorChangeClosure(color);
       document.getElementById(colorToId[i][1]).appendChild(img);
     }
 
