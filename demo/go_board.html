@@ -14,31 +14,22 @@
     var games = gamebuilder.games;
     var go = games.go;
 
-    function placeRandomPieces(board, num_pieces) {
-      for (var i = 0; i < num_pieces; ++i) {
-        var color = (Math.random() < 0.5) ?
-            go.PieceColor.BLACK : go.PieceColor.WHITE;
-        var x = Math.floor(Math.random() * 19);
-        var y = Math.floor(Math.random() * 19);
-        board.placePieceColor(color, games.coordsToStringPos([x, y]));
-      }
-    }
+    var currentColor = go.PieceColor.WHITE;
+
     /**
      * @param {gameboard.games.go.Board} board The board controller.
      * @param {HTMLTableElement} table The visible board.
-     * @param {Array.<number>} coords Board-relative coordinates.
+     * @param {string} pos Position on the board where to place the piece.
      */
-    function placePiece(board, table, coords) {
-      var pos = games.coordsToStringPos(coords);
-      board.placeColorAtPos(gamebuilder.games.go.PieceColor.WHITE, pos);
+    function placePiece(board, table, pos) {
+      board.placeColorAtPos(currentColor, pos);
       board.update(table);
     }
 
-    var image_path = '../data/images/go';
-    var board = new go.Board(image_path);
-
     // Create and display the board.
-    var table = board.create(image_path);
+    var board = new go.Board9();
+    board.setImagePath('../data/images/go');
+    var table = board.create();
     document.getElementById('board').appendChild(table);
 
     board.placeColorAtPos(go.PieceColor.BLACK, 'a2');

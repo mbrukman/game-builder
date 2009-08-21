@@ -29,12 +29,27 @@ gamebuilder.games.go.Piece = function(color) {
 };
 
 /**
+ * @param {number} m
+ * @param {number} n
  * @constructor
  */
-gamebuilder.games.go.BoardNxN = function() {
+gamebuilder.games.go.BoardMxN = function(m, n) {
+  gamebuilder.games.BoardMxN.call(this, m, n);
+  /** @type {string} */
+  this.image_path_ = 'Error: call setImagePath() to set the path';
 };
-gamebuilder.util.inherits(gamebuilder.games.go.BoardNxN,
-                          gamebuilder.games.BoardNxN);
+gamebuilder.util.inherits(gamebuilder.games.go.BoardMxN,
+                          gamebuilder.games.BoardMxN);
+
+/**
+ * Sets the internal path to image tiles used to construct a visible
+ * representation of the board.
+ *
+ * @param {string} image_path The directory containing board and piece tiles.
+ */
+gamebuilder.games.go.BoardMxN.prototype.setImagePath = function(image_path) {
+  this.image_path_ = image_path;
+};
 
 /**
  * Places a new piece with a given color at the specified position.
@@ -42,27 +57,21 @@ gamebuilder.util.inherits(gamebuilder.games.go.BoardNxN,
  * @param {go.PieceColor} color
  * @param {string} location, e.g. 'c10' or 'f9'
  */
-gamebuilder.games.go.BoardNxN.prototype.placeColorAtPos = function(color, pos) {
+gamebuilder.games.go.BoardMxN.prototype.placeColorAtPos =
+    function(color, pos) {
   this.placePieceAtPos(new gamebuilder.games.go.Piece(color), pos);
 };
 
-// ==============================================================================
-// 19x19 Go board
-// ==============================================================================
-
 /**
- * @param {string} image_path
- * @constructor
+ * setImagePath() must have been called before using this function.
+ *
+ * @param {gamebuilder.games.go.Piece} piece
+ * @return {string} The path to an image corresponding to the given piece.
+ *     Passing in null will return a clear transparent image, which can be used
+ *     to capture user clicks for processing.
  */
-gamebuilder.games.go.Board = function(image_path) {
-  gamebuilder.games.BoardNxN.call(this, 19);
-  /** @type {string} */
-  this.image_path_ = image_path;
-};
-gamebuilder.util.inherits(gamebuilder.games.go.Board,
-                          gamebuilder.games.go.BoardNxN);
-
-gamebuilder.games.go.Board.prototype.imagePathForPiece_ = function(piece) {
+gamebuilder.games.go.BoardMxN.prototype.imagePathForPiece_ =
+    function(piece) {
   if (gamebuilder.util.isDefAndNotNull(piece)) {
     if (piece.color_ == gamebuilder.games.go.PieceColor.BLACK) {
       return gamebuilder.util.sprintf('%s/black.png', this.image_path_);
@@ -76,7 +85,7 @@ gamebuilder.games.go.Board.prototype.imagePathForPiece_ = function(piece) {
   }
 };
 
-gamebuilder.games.go.Board.prototype.imageForPiece_ = function(piece) {
+gamebuilder.games.go.BoardMxN.prototype.imageForPiece_ = function(piece) {
   var image = document.createElement('img');
   image.src = this.imagePathForPiece_(piece);
   image.style.width = image.style.height = '50px';
@@ -88,7 +97,7 @@ gamebuilder.games.go.Board.prototype.imageForPiece_ = function(piece) {
  *
  * @return {HTMLTableElement} The table containing the contents of the go board.
  */
-gamebuilder.games.go.Board.prototype.create = function() {
+gamebuilder.games.go.BoardMxN.prototype.create = function() {
   var table = document.createElement('table');
   table.cellSpacing = 0;
   table.cellPadding = 0;
@@ -136,7 +145,8 @@ gamebuilder.games.go.Board.prototype.create = function() {
  * @param {Array.<number>} table_coords Coordinates relative to the visible
  *     table.
  */
-gamebuilder.games.go.Board.prototype.tableToBoardCoords = function(table_coords) {
+gamebuilder.games.go.BoardMxN.prototype.tableToBoardCoords =
+    function(table_coords) {
   var row = table_coords[0];
   var col = table_coords[1]
   return [col, this.board_.length - row - 1];
@@ -149,7 +159,7 @@ gamebuilder.games.go.Board.prototype.tableToBoardCoords = function(table_coords)
  * @param {HTMLTableElement} table The table containing the Go board to be
  * updated.  It must match in size the underlying board that this class owns.
  */
-gamebuilder.games.go.Board.prototype.update = function(table) {
+gamebuilder.games.go.BoardMxN.prototype.update = function(table) {
   // TODO: check that the table size matches the board size.
   if (this.board_.length != table.rows.length ||
       this.board_[0].length != table.rows[0].childNodes.length) {
@@ -165,7 +175,7 @@ gamebuilder.games.go.Board.prototype.update = function(table) {
     for (var c = 0; c < row.childNodes.length; ++c) {
       var cell = row.childNodes[c];
       var image = cell.childNodes[0];
-      var piece = this.getPieceAtCoords(this.tableToBoardCoords([r, c]));
+      var piece = this.getPieceAtCoords_(this.tableToBoardCoords([r, c]));
 
       if (image.src != this.imagePathForPiece_(piece)) {
         image.src = this.imagePathForPiece_(piece);
@@ -174,9 +184,9 @@ gamebuilder.games.go.Board.prototype.update = function(table) {
   }
 };
 
-function createImageClickClosure(callback, row, col) {
+function createImageClickClosure(callback, pos) {
   return function() {
-    callback(board, table, board.tableToBoardCoords([row, col]));
+    callback(board, table, pos);
   };
 }
 
@@ -187,8 +197,8 @@ function createImageClickClosure(callback, row, col) {
  * @param {Function} callback A function that accepts the board and location of
  *     the piece that was clicked on.
  */
-gamebuilder.games.go.Board.prototype.bindEmptyCells = function(table,
-                                                               callback) {
+gamebuilder.games.go.BoardMxN.prototype.bindEmptyCells = function(table,
+                                                                  callback) {
   var board = this;
   for (var r = 0; r < table.rows.length; ++r) {
     var row = table.rows[r];
@@ -196,35 +206,49 @@ gamebuilder.games.go.Board.prototype.bindEmptyCells = function(table,
       var cell = row.childNodes[c];
       var image = cell.childNodes[0];
       var coords = this.tableToBoardCoords([r, c]);
-      if (gamebuilder.util.isNotDefOrNull(this.getPieceAtCoords(coords))) {
-        image.onclick = createImageClickClosure(callback, r, c);
+      var pos = gamebuilder.games.coordsToStringPos(coords);
+      if (gamebuilder.util.isNotDefOrNull(this.getPieceAtCoords_(coords))) {
+        image.onclick = createImageClickClosure(callback, pos);
       }
     }
   }
 };
 
-// ==============================================================================
+// =============================================================================
+// 19x19 Go board
+// =============================================================================
+
+/**
+ * @constructor
+ */
+gamebuilder.games.go.Board19 = function() {
+  gamebuilder.games.go.BoardMxN.call(this, 19, 19);
+};
+gamebuilder.util.inherits(gamebuilder.games.go.Board19,
+                          gamebuilder.games.go.BoardMxN);
+
+// =============================================================================
 // 13x13 Go board
-// ==============================================================================
+// =============================================================================
 
 /**
  * @constructor
  */
 gamebuilder.games.go.Board13 = function() {
-  gamebuilder.games.BoardNxN.call(this, 13);
+  gamebuilder.games.go.BoardMxN.call(this, 13, 13);
 };
 gamebuilder.util.inherits(gamebuilder.games.go.Board13,
-                          gamebuilder.games.go.BoardNxN);
+                          gamebuilder.games.go.BoardMxN);
 
-// ==============================================================================
+// =============================================================================
 // 9x9 Go board
-// ==============================================================================
+// =============================================================================
 
 /**
  * @constructor
  */
 gamebuilder.games.go.Board9 = function() {
-  gamebuilder.games.BoardNxN.call(this, 9);
+  gamebuilder.games.BoardMxN.call(this, 9, 9);
 };
 gamebuilder.util.inherits(gamebuilder.games.go.Board9,
-                          gamebuilder.games.go.BoardNxN);
+                          gamebuilder.games.go.BoardMxN);

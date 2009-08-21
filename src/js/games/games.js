@@ -37,7 +37,7 @@ gamebuilder.games.BoardMxN = function(m, n) {
  * @param {?} pos
  */
 gamebuilder.games.BoardMxN.prototype.placePieceAtPos = function(piece, pos) {
-  this.placePieceAtCoords(piece, gamebuilder.games.stringPosToCoords(pos));
+  this.placePieceAtCoords_(piece, gamebuilder.games.stringPosToCoords(pos));
 };
 
 gamebuilder.games.BoardMxN.prototype.validateCoords = function(coords) {
@@ -53,14 +53,19 @@ gamebuilder.games.BoardMxN.prototype.validateCoords = function(coords) {
  * @param {Piece} piece
  * @param {Array.<number>} coords A 2-element array that specifies the
  *     board-relative coordinates.
+ * @private
  */
-gamebuilder.games.BoardMxN.prototype.placePieceAtCoords = function(piece, coords) {
+gamebuilder.games.BoardMxN.prototype.placePieceAtCoords_ =
+    function(piece, coords) {
   // Will throw an error if invalid.
   this.validateCoords(coords);
   this.board_[coords[0]][coords[1]] = piece;
 }
 
-gamebuilder.games.BoardMxN.prototype.getPieceAtCoords = function(coords) {
+/**
+ * @private
+ */
+gamebuilder.games.BoardMxN.prototype.getPieceAtCoords_ = function(coords) {
   // Will throw an error if invalid.
   this.validateCoords(coords);
   return this.board_[coords[0]][coords[1]];
