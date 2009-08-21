@@ -63,6 +63,14 @@ gamebuilder.games.go.BoardMxN.prototype.placeColorAtPos =
 };
 
 /**
+ *
+ */
+gamebuilder.games.go.BoardMxN.prototype.erasePieceAtPos = function(pos) {
+  var coords = gamebuilder.games.stringPosToCoords(pos);
+  this.board_[coords[0]][coords[1]] = null;
+};
+
+/**
  * setImagePath() must have been called before using this function.
  *
  * @param {gamebuilder.games.go.Piece} piece
@@ -70,7 +78,7 @@ gamebuilder.games.go.BoardMxN.prototype.placeColorAtPos =
  *     Passing in null will return a clear transparent image, which can be used
  *     to capture user clicks for processing.
  */
-gamebuilder.games.go.BoardMxN.prototype.imagePathForPiece_ =
+gamebuilder.games.go.BoardMxN.prototype.imagePathForPiece =
     function(piece) {
   if (gamebuilder.util.isDefAndNotNull(piece)) {
     if (piece.color_ == gamebuilder.games.go.PieceColor.BLACK) {
@@ -85,9 +93,12 @@ gamebuilder.games.go.BoardMxN.prototype.imagePathForPiece_ =
   }
 };
 
-gamebuilder.games.go.BoardMxN.prototype.imageForPiece_ = function(piece) {
+/**
+ *
+ */
+gamebuilder.games.go.BoardMxN.prototype.imageForPiece = function(piece) {
   var image = document.createElement('img');
-  image.src = this.imagePathForPiece_(piece);
+  image.src = this.imagePathForPiece(piece);
   image.style.width = image.style.height = '50px';
   return image;
 };
@@ -130,7 +141,7 @@ gamebuilder.games.go.BoardMxN.prototype.create = function() {
           gamebuilder.util.sprintf('url(%s/%s)', this.image_path_, bg_image);
       // TODO: replace with CSS classes.
       cell.style.width = cell.style.height = '50px';
-      cell.appendChild(this.imageForPiece_(this.board_[i][j]));
+      cell.appendChild(this.imageForPiece(this.board_[i][j]));
       row.appendChild(cell);
     }
   }
@@ -177,8 +188,8 @@ gamebuilder.games.go.BoardMxN.prototype.update = function(table) {
       var image = cell.childNodes[0];
       var piece = this.getPieceAtCoords_(this.tableToBoardCoords([r, c]));
 
-      if (image.src != this.imagePathForPiece_(piece)) {
-        image.src = this.imagePathForPiece_(piece);
+      if (image.src != this.imagePathForPiece(piece)) {
+        image.src = this.imagePathForPiece(piece);
       }
     }
   }

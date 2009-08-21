@@ -5,16 +5,57 @@
   <script src="../src/js/util/util.js"></script>
   <script src="../src/js/games/games.js"></script>
   <script src="../src/js/games/go/go.js"></script>
+  <style type="text/css">
+    .sel { border: 2px solid #224499; }
+    .notsel { border: 2px solid white; }
+  </style>
 </head>
 <body>
 
-  <div id='board'></div>
+  <table border=0>
+  <tr>
+    <td><div id='board'></div></td>
+    <td>Keys: 
+      <ul>
+      <li><b>b</b> - place black pieces</li>
+      <li><b>w</b> - place white pieces</li>
+      <li><b>e</b> - erase pieces</li>
+      <table>
+        <tr>
+          <td id='blackPiece'><span></span></td>
+          <td id='whitePiece'><span></span></td>
+          <td id='emptyPiece'><span></span></td>
+        </tr>
+      </table>
+      Click to place/erase pieces.
+    </td>
+  </tr>
+  </table>
 
   <script>
     var games = gamebuilder.games;
     var go = games.go;
 
-    var currentColor = go.PieceColor.WHITE;
+    var currentColor = go.PieceColor.BLACK;
+    var colorToId = [
+      [go.PieceColor.BLACK, 'blackPiece'],
+      [go.PieceColor.WHITE, 'whitePiece'],
+      [null               , 'emptyPiece']
+    ];
+
+    function updateNextPiece() {
+      for (var i = 0; i < colorToId.length; ++i) {
+        var elt = document.getElementById(colorToId[i][1]);
+        // FIXME: we should be able to set the border via
+        //   elt.style.className = 'sel';
+        // but that doesn't seem to work.
+        if (currentColor == colorToId[i][0]) {
+          elt.style.border = '2px solid #224499';
+        } else {
+          elt.style.border = '2px solid white';
+        }
+      }
+    }
 
     /**
      * @param {gameboard.games.go.Board} board The board controller.
@@ -22,8 +63,28 @@
      * @param {string} pos Position on the board where to place the piece.
      */
     function placePiece(board, table, pos) {
-      board.placeColorAtPos(currentColor, pos);
+      if (gamebuilder.util.isDefAndNotNull(currentColor)) {
+        board.placeColorAtPos(currentColor, pos);
+      } else {
+        board.erasePieceAtPos(pos);
+      }
       board.update(table);
+      updateNextPiece();
+    }
+
+    /**
+     * Handle key presses from the user.
+     */
+    function captureKeypress(key) {
+      var which = String.fromCharCode(key.which).toLowerCase();
+      if (which == 'b') {
+        currentColor = go.PieceColor.BLACK;
+      } else if (which == 'w') {
+        currentColor = go.PieceColor.WHITE;
+      } else if (which == 'e') {
+        currentColor = null;
+      }
+      updateNextPiece();
     }
 
     // Create and display the board.
@@ -32,13 +93,22 @@
     var table = board.create();
     document.getElementById('board').appendChild(table);
 
-    board.placeColorAtPos(go.PieceColor.BLACK, 'a2');
-    board.placeColorAtPos(go.PieceColor.WHITE, 'b3');
-    board.placeColorAtPos(go.PieceColor.BLACK, 'c4');
+    // Setup pieces in the legend.
+    for (var i = 0; i < colorToId.length; ++i) {
+      var color = colorToId[i][0];
+      var piece = null;
+      if (gamebuilder.util.isDefAndNotNull(color)) {
+        piece = new go.Piece(color);
+      }
+      var img = board.imageForPiece(piece);
+      document.getElementById(colorToId[i][1]).appendChild(img);
+    }
 
     board.update(table);
-
     board.bindEmptyCells(table, placePiece);
+    updateNextPiece();
+
+    document.onkeypress = captureKeypress;
   </script>
 
 </body>
