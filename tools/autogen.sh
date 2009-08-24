@@ -33,11 +33,20 @@ function printLicenseWithYear() {
 }
 
 function printLicenseNonHashComment() {
-  printLicenseWithYear | sed "s#^#$1#;s/ \+$//"
+  printLicenseWithYear | sed "s#^#$1 #;s/ \+$//"
 }
 
 function printLicenseHashComment() {
   printLicenseWithYear | sed "s/^/# /;s/ \+$//"
+}
+
+function printFileCommentTemplate() {
+  local comment=$1
+  local repeat=$(echo 80 / $(echo -n ${comment} | wc -c) | bc)
+  echo $comment
+  perl -e "print \"$comment\" x $repeat . \"\n\""
+  echo $comment
+  echo "$comment <TODO: High-level file comment>"
 }
 
 if [ -z $1 ]; then
@@ -48,19 +57,22 @@ fi
 case $1 in
 
   *.js)
-    printLicenseNonHashComment "// "
+    printLicenseNonHashComment "//"
+    printFileCommentTemplate "//"
     ;;
 
   *.py)
     echo "#!/usr/bin/python2.4"
     echo "#"
     printLicenseHashComment
+    printFileCommentTemplate "#"
     ;;
 
   *.sh)
     echo "#!/bin/bash"
     echo "#"
     printLicenseHashComment
+    printFileCommentTemplate "#"
     echo
     echo "set -o errexit"
     echo "set -o nounset"
