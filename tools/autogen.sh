@@ -40,25 +40,41 @@ function printLicenseHashComment() {
   printLicenseWithYear | sed "s/^/# /;s/ \+$//"
 }
 
+readonly TODO_COMMENT="<TODO: High-level file comment>"
 function printFileCommentTemplate() {
   local comment=$1
+  # Fit into 80 cols: repeat enough times, depending on our comment width.
   local repeat=$(echo 80 / $(echo -n ${comment} | wc -c) | bc)
   echo $comment
   perl -e "print \"$comment\" x $repeat . \"\n\""
   echo $comment
-  echo "$comment <TODO: High-level file comment>"
+  echo "$comment ${TODO_COMMENT}"
 }
 
-if [ -z $1 ]; then
+if [[ $# -eq 0 ]]; then
   echo "Syntax: $0 [filename]"
   exit
 fi
 
 case $1 in
 
-  *.js)
+  *.c | *.h)
+    echo "/*"
+    printLicenseNonHashComment " *"
+    echo " */"
+    echo "/* ${TODO_COMMENT} */"
+    ;;
+
+  *.cpp | *.hpp | *.java | *.js | *.proto)
     printLicenseNonHashComment "//"
     printFileCommentTemplate "//"
+    ;;
+
+  *_test.py)
+    # Get the common python header without the test additions.
+    $0 .py
+    echo
+    echo "import unittest"
     ;;
 
   *.py)
@@ -76,6 +92,10 @@ case $1 in
     echo
     echo "set -o errexit"
     echo "set -o nounset"
+    ;;
+
+  Makefile | Makefile.*)
+    printLicenseHashComment
     ;;
 
   *)
