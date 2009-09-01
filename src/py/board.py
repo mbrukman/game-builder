@@ -66,7 +66,7 @@ class Board:
     """
     return self.__isValidCoord(Board.posToCoords(pos))
 
-  def isEmpty(self, pos):
+  def isEmptyPos(self, pos):
     """Tells whether the given position on the board is empty.
     Args:
       pos: human-readable alpha-numeric position

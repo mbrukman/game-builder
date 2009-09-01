@@ -51,22 +51,22 @@ class TestBoard(unittest.TestCase):
     self.assertRaises(Exception, b.getPieceAtPos, 'f4')
     self.assertRaises(Exception, b.setPieceAtPos, 'piece', 'a7')
 
-  def testIsEmpty(self):
+  def testIsEmptyPos(self):
     rows = 3
     cols = 5
     all_pos = TestBoard.allPositions(rows, cols)
 
     b = board.Board((rows, cols))
     for pos in all_pos:
-      self.assertTrue(b.isEmpty(pos))
+      self.assertTrue(b.isEmptyPos(pos))
 
     b.setPieceAtPos('New piece', 'a1')
 
     for pos in all_pos:
       if pos == 'a1':
-        self.assertFalse(b.isEmpty(pos))
+        self.assertFalse(b.isEmptyPos(pos))
       else:
-        self.assertTrue(b.isEmpty(pos))
+        self.assertTrue(b.isEmptyPos(pos))
 
 if __name__ == '__main__':
   unittest.main()
