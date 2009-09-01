@@ -22,14 +22,18 @@ import board
 import unittest
 
 class TestBoard(unittest.TestCase):
+  @classmethod
+  def allPositions(cls, rows, cols):
+    alpha = map(chr, range(ord('a'), ord('a') + rows))
+    num = range(1, cols + 1)
+    # The cross-product of alpha and num are the possible positions.
+    return ['%s%d' % (a, n) for a in alpha for n in num]
+
   def testIsValid(self):
     rows = 3
     cols = 4
     b = board.Board((rows, cols))
-    alpha = map(chr, range(ord('a'), ord('a') + rows))
-    num = range(1, cols + 1)
-    # The cross-product of alpha and num are the possible positions.
-    for pos in ['%s%d' % (a, n) for a in alpha for n in num]:
+    for pos in TestBoard.allPositions(rows, cols):
       self.assertTrue(b.isValidPos(pos))
 
   def testGetAndSetPiece(self):
@@ -47,6 +51,22 @@ class TestBoard(unittest.TestCase):
     self.assertRaises(Exception, b.getPieceAtPos, 'f4')
     self.assertRaises(Exception, b.setPieceAtPos, 'piece', 'a7')
 
+  def testIsEmpty(self):
+    rows = 3
+    cols = 5
+    all_pos = TestBoard.allPositions(rows, cols)
+
+    b = board.Board((rows, cols))
+    for pos in all_pos:
+      self.assertTrue(b.isEmpty(pos))
+
+    b.setPieceAtPos('New piece', 'a1')
+
+    for pos in all_pos:
+      if pos == 'a1':
+        self.assertFalse(b.isEmpty(pos))
+      else:
+        self.assertTrue(b.isEmpty(pos))
 
 if __name__ == '__main__':
   unittest.main()

@@ -66,6 +66,16 @@ class Board:
     """
     return self.__isValidCoord(Board.posToCoords(pos))
 
+  def isEmpty(self, pos):
+    """Tells whether the given position on the board is empty.
+    Args:
+      pos: human-readable alpha-numeric position
+
+    Returns:
+      True iff pos is an empty square on this board.
+    """
+    return self.getPieceAtPos(pos) is None
+
   @classmethod
   def posToCoords(cls, pos):
     """Converts a human-readable alphanumeric position to internal coordinates.
