@@ -1,0 +1,31 @@
+<html>
+<head>
+  <script>
+  function showBoard() {
+    var PIECES = ['pawn', 'knight', 'bishop', 'rook', 'queen', 'king'];
+    var COLORS = ['b', 'w'];
+  
+    var div = document.getElementById('board');
+    var table = document.createElement('table');
+    for (var c = 0, color; color = COLORS[c++]; ) {
+      var row = table.insertRow(-1);
+      for (var p = 0, piece; piece = PIECES[p++]; ) {
+        var cell = document.createElement('td');
+        var anchor = document.createElement('a');
+        var image = document.createElement('img');
+        anchor.href = image.src = piece + '_' + color + '.png';
+        image.style.width = image.style.height = 50;
+        image.border = 0;
+        anchor.appendChild(image);
+        cell.appendChild(anchor);
+        row.appendChild(cell);
+      }
+    }
+    div.appendChild(table);
+  }
+  </script>
+</head>
+<body onload="showBoard()">
+  <div id=board></div>
+</body>
+</html>
