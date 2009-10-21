@@ -1,0 +1,33 @@
+<html>
+<head>
+  <link rel="stylesheet" href="../data/css/chess.css" />
+  <script src="../src/js/gamebuilder.js"></script>
+  <script src="../src/js/util/util.js"></script>
+  <script src="../src/js/games/games.js"></script>
+  <script src="../src/js/games/chess/chess.js"></script>
+  <script src="../src/js/games/chess/fen.js"></script>
+  <script src="../src/js/games/chess/theme.js"></script>
+</head>
+<body>
+
+<div class="gamebuilder_chess_fen">
+rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1
+</div>
+
+<script>
+var basename = document.location.href.replace(/[^\/]*$/, '');
+var theme = new gamebuilder.games.chess.Theme(
+  ['light_sq', 'dark_sq'],
+  basename + '../data/images/chess',
+  [['pawn_w.png', 'knight_w.png', 'bishop_w.png',
+    'rook_w.png', 'queen_w.png', 'king_w.png'],
+   ['pawn_b.png', 'knight_b.png', 'bishop_b.png',
+    'rook_b.png', 'queen_b.png', 'king_b.png']],
+  'piece_img');
+
+gamebuilder.games.chess.Theme.DEFAULT_THEME = theme;
+gamebuilder.games.chess.FEN.parseAllFenInDocument();
+</script>
+
+</body>
+</html>

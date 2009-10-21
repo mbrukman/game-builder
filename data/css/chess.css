@@ -1,0 +1,12 @@
+.light_sq, .dark_sq, .piece_img {
+  width: 50px;
+  height: 50px;
+}
+
+.light_sq {
+  background-color: #FFDB87;
+}
+
+.dark_sq {
+  background-color: #846501;
+}
