@@ -72,9 +72,14 @@ case $1 in
 
   *_test.py)
     # Get the common python header without the test additions.
-    $0 .py
+    readonly BASE_PY=$(echo $1 | sed 's/_test//')
+    $0 ${BASE_PY}
     echo
     echo "import unittest"
+    # Maybe import the package that this is intended to test.
+    if [ -e ${BASE_PY} ]; then
+      echo "import $(echo ${BASE_PY} | sed 's/\.py$//')"
+    fi
     ;;
 
   *.py)
