@@ -14,7 +14,7 @@
 
 gamebuilder.games.chess.FEN = function() {
   /**
-   * @type {chess.Board}
+   * @type {gamebuilder.games.chess.Board}
    * @private
    */
   this.chess_board_ = new gamebuilder.games.chess.Board();
@@ -26,12 +26,13 @@ gamebuilder.games.chess.FEN = function() {
  *
  * Function will attempt ...
  *
- * @param {string} fen
+ * @param {string} fen The FEN for this diagram.
  * @param {Array.<string>} errors
  * @returns {boolean} true if parsed correctly; false otherwise
  */
 gamebuilder.games.chess.FEN.prototype.parse = function(fen, errors) {
-  fen = fen.replace(/^\s+/, '');
+  fen = fen.replace(/\n/g, ' ').replace(/\r/g, ' ');
+  fen = fen.replace(/^\s+/, '').replace(/\s+$/, '');
   if (fen.length == 0) {
     errors.push('No FEN present');
     return false;
@@ -67,9 +68,8 @@ gamebuilder.games.chess.FEN.prototype.parse = function(fen, errors) {
                   this.chess_board_.numRows() + ')');
       return false;
     }
-    for (var c = 0; c < row.length; ++c) {
-      var row_char = row[c];
-      // Blank squares
+    for (var c = 0, row_char; row_char = row[c++]; /* inc. in condition */) {
+      // Blank squares.
       if (row_char >= '1' && row_char <= '8') {
         board_col += row_char - '0';
       } else {
@@ -100,8 +100,6 @@ gamebuilder.games.chess.FEN.prototype.parse = function(fen, errors) {
  * @param {Node} node
  */
 gamebuilder.games.chess.FEN.prototype.attachDiagramToNode = function(node) {
-  //var diagram = document.createTextNode('...');
-  //node.appendChild(diagram);
   this.chess_board_.displayHtml(node);
 };
 
@@ -113,14 +111,14 @@ gamebuilder.games.chess.FEN.parseAllFenInDocument = function() {
   if (!gamebuilder.util.isDefAndNotNull(elts)) {
     return;
   }
-  for (var f = 0, container; container = elts[f]; ++f) {
+  for (var f = 0, container; container = elts[f++]; /* inc. in condition */) {
     var fen = new gamebuilder.games.chess.FEN();
     var errors = [];
     if (fen.parse(container.innerHTML, errors)) {
       container.innerHTML = '';
       fen.attachDiagramToNode(container);
     } else {
-      container.innerHTML = 'Error: ' + error;
+      container.innerHTML = 'Error: ' + errors.join('<br>');
     }
   }
 };

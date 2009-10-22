@@ -112,7 +112,7 @@ gamebuilder.games.chess.Piece.lowerCaseCharToPiece = function(char_code) {
     case 'q': return gamebuilder.games.chess.Piece.QUEEN;
     case 'k': return gamebuilder.games.chess.Piece.KING;
     default:
-      throw new Error('Invalid piece char code: ' + char_code);
+      throw new Error('Invalid piece char code: `' + char_code + "'");
   }
 };
 
@@ -173,8 +173,8 @@ gamebuilder.games.chess.BoardMxN = function(m, n) {
     this.board_[i] = [];
     for (var j = 0; j < m; ++j) {
       this.board_[i][j] = new gamebuilder.games.chess.BoardSquare((i + j) % 2
-          ? gamebuilder.games.chess.SquareColor.LIGHT
-          : gamebuilder.games.chess.SquareColor.DARK,
+          ? gamebuilder.games.chess.SquareColor.DARK
+          : gamebuilder.games.chess.SquareColor.LIGHT,
           null);
     }
   }
@@ -262,19 +262,41 @@ gamebuilder.games.chess.BoardMxN.prototype.displayText = function(node) {
 gamebuilder.games.chess.BoardMxN.prototype.displayHtml = function(node) {
   // TODO: create a table which contains the board and row/column labels
   // separately, so we can apply individual styles to each (e.g., border).
-  var table = document.createElement('table');
-  table.style.border = '';
-  table.style.cellPadding = table.cellSpacing = 0;
-  var theme = gamebuilder.games.chess.Theme.DEFAULT_THEME;
+  // <table>
+  // <tr>
+  //   <td><table><!-- 8 -> 1 --></table></td>
+  //   <td><table><!-- The  board --></table></td>
+  // </tr>
+  // <tr>
+  //   <td><!-- Empty cell --></td>
+  //   <td><!-- a -> h --></td>
+  // </tr>
+  // </table>
+  var container = document.createElement('table');
+  var first_row = container.insertRow(-1);
+  var numbers_cell = document.createElement('td');
+  var numbers_table = document.createElement('table');
+  numbers_table.style.border = '';
+  numbers_table.style.cellPadding = numbers_table.cellSpacing = 0;
   for (var i = 0, e = this.board_.length; i < e; ++i) {
-    var row = document.createElement('tr');
-    table.appendChild(row);
-    // The row number
+    var row = numbers_table.insertRow(-1);
     var cell = document.createElement('td');
     cell.appendChild(document.createTextNode(this.board_.length - i));
     cell.valign = 'middle';
     row.appendChild(cell);
+  }
+  numbers_cell.appendChild(numbers_table);
+  first_row.appendChild(numbers_cell);
 
+  // The board itself.
+  var board_cell = document.createElement('td');
+  var board_table = document.createElement('table');
+  board_table.style.border = '';
+  board_table.style.cellPadding = board_table.cellSpacing = 0;
+  // TODO: Allow user to override the default theme.
+  var theme = gamebuilder.games.chess.Theme.DEFAULT_THEME;
+  for (var i = 0, e = this.board_.length; i < e; ++i) {
+    var row = board_table.insertRow(-1);
     for (var j = 0; j < this.board_[i].length; ++j) {
       var piece = this.board_[i][j].getPiece();
       var cell = document.createElement('td');
@@ -290,20 +312,31 @@ gamebuilder.games.chess.BoardMxN.prototype.displayHtml = function(node) {
       row.appendChild(cell);
     }
   }
+  board_cell.appendChild(board_table);
+  first_row.appendChild(board_cell);
+
+  // Start the second row.
+  var second_row = container.insertRow(-1);
+
+  // Empty cell in the corner.
+  second_row.appendChild(document.createElement('td'));
 
   // Bottom labels
-  var bottom_labels_row = document.createElement('tr');
-  // Empty cell to compensate for the row number labels
-  bottom_labels_row.appendChild(document.createElement('td'));
+  var alpha_cell = document.createElement('td');
+  var alpha_table = document.createElement('table');
+  var alpha_row = alpha_table.insertRow(-1);
   for (var i = 0, e = this.board_.length; i < e; ++i) {
     var cell = document.createElement('td');
     var text = String.fromCharCode('a'.charCodeAt(0) + i);
     cell.appendChild(document.createTextNode(text));
     cell.align = 'center';
-    bottom_labels_row.appendChild(cell);
+    alpha_row.appendChild(cell);
   }
-  table.appendChild(bottom_labels_row);
-  node.appendChild(table);
+  alpha_cell.appendChild(alpha_table);
+  second_row.appendChild(alpha_cell);
+
+  // Attach the results to the real node.
+  node.appendChild(container);
 };
 
 // ==============================================================================
