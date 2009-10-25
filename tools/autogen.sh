@@ -82,6 +82,14 @@ case $1 in
     fi
     ;;
 
+  *.php)
+    # PHP accepts C, C++, and shell-style comments.
+    echo "#!/usr/bin/php"
+    echo "#"
+    printLicenseHashComment
+    printFileCommentTemplate "#"
+    ;;
+
   *.py)
     echo "#!/usr/bin/python2.4"
     echo "#"
