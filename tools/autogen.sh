@@ -40,7 +40,7 @@ function printLicenseHashComment() {
   printLicenseWithYear | sed "s/^/# /;s/ \+$//"
 }
 
-readonly TODO_COMMENT="<TODO: High-level file comment>"
+readonly TODO_COMMENT="TODO: High-level file comment."
 function printFileCommentTemplate() {
   local comment=$1
   # Fit into 80 cols: repeat enough times, depending on our comment width.
@@ -83,11 +83,20 @@ case $1 in
     ;;
 
   *.php)
-    # PHP accepts C, C++, and shell-style comments.
-    echo "#!/usr/bin/php"
-    echo "#"
-    printLicenseHashComment
-    printFileCommentTemplate "#"
+    # We can't make PHP scripts locally executable with the #!/usr/bin/php line
+    # because PHP comments only have meaning inside the <?php ... ?> which
+    # means the first line cannot be simply #!/usr/bin/php to let the shell
+    # know how to run these scripts.  Instead, we'll have to run them via 
+    # "php script.php" .
+    #
+    # Note: PHP accepts C, C++, and shell-style comments.
+    echo "<?php"
+    printLicenseNonHashComment "//"
+    printFileCommentTemplate "//"
+    echo
+    # E_STRICT was added in PHP 5.0 and became included in E_ALL in PHP 6.0 .
+    echo "error_reporting(E_ALL | E_STRICT);"
+    echo "?>"
     ;;
 
   *.py)
