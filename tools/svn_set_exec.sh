@@ -16,26 +16,19 @@
 #
 ################################################################################
 #
-# Sets the appropriate MIME type on HTML, PNG, etc. files to make them viewable
-# via the Google Code website directly.
+# Sets the svn:executable property on given files.
 
 set -o errexit
 set -o nounset
 
-setMimeType() {
+setExecutable() {
   case $1 in
-    *.html)
-      svn propset 'svn:mime-type' text/html $1
-      ;;
-    *.jpg)
-      svn propset 'svn:mime-type' image/jpg $1
-      ;;
-    *.png)
-      svn propset 'svn:mime-type' image/png $1
+    *.py | *.sh)
+      svn propset 'svn:executable' ON $1
       ;;
   esac
 }
 
 for file in $*; do
-  setMimeType $file
+  setExecutable $file
 done
