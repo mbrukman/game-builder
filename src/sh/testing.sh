@@ -18,10 +18,15 @@
 #
 # Helper methods for testing shell scripts.
 
+if [[ ${BASH_VERSINFO} -lt 3 ]]; then
+  echo "Bash version 3 or higher is required for function tracing."
+  exit 1
+fi
+
 set -o functrace
 
 function assertTrue() {
-  if [[ ! $1 ]]; then
+  if [[ ! "$1" ]]; then
     echo "Assert failed: $1 expected: true, actual: false"
     caller
     exit -1
@@ -29,7 +34,7 @@ function assertTrue() {
 }
 
 function assertFalse() {
-  if [[ $1 ]]; then
+  if [[ "$1" ]]; then
     echo "Assert failed: $1 expected: false, actual: true"
     caller
     exit -1
@@ -45,7 +50,7 @@ function assertStrEQ() {
 }
 
 function assertEQ() {
-  if [[ $1 -ne $2 ]]; then
+  if [[ "$1" -ne "$2" ]]; then
     echo "Assert failed: expected: $1, actual: $2"
     caller
     exit -1
@@ -53,16 +58,40 @@ function assertEQ() {
 }
 
 function assertNE() {
-  if [[ $1 -eq $2 ]]; then
+  if [[ "$1" -eq "$2" ]]; then
     echo "Assert failed: expected: unequal, both: $1"
     caller
     exit -1
   fi
 }
 
+function assertGE() {
+  if [[ "$1" -lt "$2" ]]; then
+    echo "Assert failed: expected: $1 >= $2"
+    caller
+    exit -1
+  fi
+}
+
 function assertGT() {
-  if [[ $2 -le $1 ]]; then
-    echo "Assert failed: expected: $2 >= $1"
+  if [[ "$1" -le "$2" ]]; then
+    echo "Assert failed: expected: $1 > $2"
+    caller
+    exit -1
+  fi
+}
+
+function assertLE() {
+  if [[ "$1" -gt "$2" ]]; then
+    echo "Assert failed: expected: $1 <= $2"
+    caller
+    exit -1
+  fi
+}
+
+function assertLT() {
+  if [[ "$1" -ge "$2" ]]; then
+    echo "Assert failed: expected: $1 < $2"
     caller
     exit -1
   fi
@@ -82,4 +111,4 @@ function printFns() {
   done
 }
 
-echo "PASSED $(printFns | wc -l) test(s)."
+echo "PASSED $(printFns | wc -l | sed 's/^ *//') test(s)."
