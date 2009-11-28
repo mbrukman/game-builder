@@ -16,25 +16,53 @@
 #
 ################################################################################
 #
-# Exports the minimum parts of JsUnit from SVN that we need to run Javascript
-# tests.
+# Populates gamebuilder/third_party with snapshots of other projects and tools
+# we use in GameBuilder.
+#
+# Currently, those tools are:
+#   * Closure (library + compiler)
+#   * JsUnit
 
-if [[ ! -e third_party ]]; then
+set -o errexit
+set -o nounset
+
+if [[ ! -d third_party ]]; then
   mkdir third_party
 fi
 cd third_party
 
-# Grab relevant parts of JsUnit that we need for testing.
-JSUNIT_SVN_BASE="http://jsunit.svn.sourceforge.net/svnroot/jsunit/trunk/jsunit"
-JSUNIT_SVN_REV="1338"
-JSUNIT_PARTS="app images lib testRunner.html"
-
-if [[ ! -e jsunit ]]; then
-  mkdir jsunit
+# Download Closure compiler.
+if [[ ! -d closure-compiler ]]; then
+  mkdir closure-compiler && cd closure-compiler
+  echo "Downloading Closure compiler..."
+  curl http://closure-compiler.googlecode.com/files/compiler-latest.tar.gz \
+       -o closure-compiler.tar.gz
+  tar zxf closure-compiler.tar.gz
+  cd ..
 fi
-cd jsunit
-for part in ${JSUNIT_PARTS}; do
-  if [[ ! -e ${part} ]]; then
-    svn export ${JSUNIT_SVN_BASE}/${part}@${JSUNIT_SVN_REV}
-  fi
-done
+
+# Download Closure library.
+if [[ ! -d closure-library ]]; then
+  echo "Exporting Closure library from SVN..."
+  svn -q export "http://closure-library.googlecode.com/svn/trunk@9" closure-library
+  rm -rf closure-library/closure/docs
+fi
+
+# Grab relevant parts of JsUnit that we need for testing.
+if [[ ! -d jsunit ]]; then
+  mkdir jsunit && cd jsunit
+  echo "Exporting JsUnit parts from SVN..."
+
+  readonly JSUNIT_SVN_BASE="http://jsunit.svn.sourceforge.net/svnroot/jsunit/trunk/jsunit"
+  readonly JSUNIT_SVN_REV="1338"
+  readonly JSUNIT_PARTS="app images lib testRunner.html"
+
+  for part in ${JSUNIT_PARTS}; do
+    if [[ ! -e ${part} ]]; then
+      svn -q export ${JSUNIT_SVN_BASE}/${part}@${JSUNIT_SVN_REV}
+    fi
+  done
+  cd ..
+fi
+
+echo Done.
