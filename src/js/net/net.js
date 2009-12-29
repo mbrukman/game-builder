@@ -18,27 +18,23 @@ gamebuilder.net = {};
  * A cross-browser implementation of XMLHttpRequest.
  *
  * @return {XMLHttpRequest} an XMLHttpRequest object if this browser supports
- *     it; otherwise, returns null.
+ *     it; otherwise, throws an exception.
  */
 gamebuilder.net.xmlHttpRequest = function() {
-  var request = null;
   try {
-    // Mozilla, Firefox, and recent IE versions support this approach.
-    request = new XMLHttpRequest();
+    // Recent versions of browsers support this method.
+    return new XMLHttpRequest();
   } catch (e) {
     // Older versions of IE use an ActiveX implementation.
     var MS_XML_HTTP = [ 'Msxml2.XMLHTTP.6.0', 'Msxml2.XMLHTTP.3.0',
                         'Msxml2.XMLHTTP', 'Microsoft.XMLHTTP' ];
     for (var i = 0; i < MS_XML_HTTP.length; ++i) {
       try {
-        request = new ActiveXObject(MS_XML_HTTP[i]);
+        return new ActiveXObject(MS_XML_HTTP[i]);
       } catch (e) {
         // No-op, will try the next version on the next iteration.
       }
     }
-  }
-  if (gamebuilder.util.isDefAndNotNull(request)) {
-    return request;
   }
   throw new Error('This browser does not support XMLHttpRequest');
 };
