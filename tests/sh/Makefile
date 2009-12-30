@@ -21,7 +21,7 @@ test: $(TESTS)
 	$(VERB) for t in $(TESTS); do \
     echo -n "Testing $${t} ... "; \
 		TEST_OUT=`mktemp /tmp/$${t}.XXXXXX`; \
-		/opt/local/bin/bash ./$${t} > $${TEST_OUT} 2>&1; \
+		./$${t} > $${TEST_OUT} 2>&1; \
 		if [[ -n "`tail -n 1 $${TEST_OUT} | grep PASSED`" ]]; then \
 			rm -f $${TEST_OUT}; \
 			echo "OK."; \
