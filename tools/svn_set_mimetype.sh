@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/bash -eu
 #
 # Copyright 2009 Google Inc.
 # 
@@ -19,23 +19,22 @@
 # Sets the appropriate MIME type on HTML, PNG, etc. files to make them viewable
 # via the Google Code website directly.
 
-set -o errexit
-set -o nounset
-
-setMimeType() {
-  case $1 in
+for file in "$@"; do
+  case $file in
+    *.css)
+      svn propset 'svn:mime-type' text/css $file
+      ;;
     *.html)
-      svn propset 'svn:mime-type' text/html $1
+      svn propset 'svn:mime-type' text/html $file
       ;;
     *.jpg)
-      svn propset 'svn:mime-type' image/jpg $1
+      svn propset 'svn:mime-type' image/jpg $file
+      ;;
+    *.js)
+      svn propset 'svn:mime-type' text/javascript $file
       ;;
     *.png)
-      svn propset 'svn:mime-type' image/png $1
+      svn propset 'svn:mime-type' image/png $file
       ;;
   esac
-}
-
-for file in $*; do
-  setMimeType $file
 done
