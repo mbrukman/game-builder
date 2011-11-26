@@ -12,10 +12,13 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-gamebuilder.util = {};
+goog.provide('gamebuilder.util');
+
 
 /**
- * @param {Object?} obj
+ * TODO: document.
+ *
+ * @param {?Object} obj
  * @return {boolean} Whether obj is defined.
  */
 gamebuilder.util.isDef = function(obj) {
@@ -23,7 +26,9 @@ gamebuilder.util.isDef = function(obj) {
 };
 
 /**
- * @param {Object?} obj
+ * TODO: document.
+ *
+ * @param {?Object} obj
  * @return {boolean} Whether obj is defined and not null.
  */
 gamebuilder.util.isDefAndNotNull = function(obj) {
@@ -35,23 +40,13 @@ gamebuilder.util.isNotDefOrNull = function(obj) {
 };
 
 /**
- * Copies all prototype definitions from {@code base} to {@code derived}.
- * Discussion: http://www.crockford.com/javascript/inheritance.html .
+ * TODO: document.
  *
- * @param {Function} derived
- * @param {Function} base
- */
-gamebuilder.util.inherits = function(derived, base) {
-  for (proto in base.prototype) {
-    derived.prototype[proto] = base.prototype[proto];
-  }
-};
-
-/**
  * @param {string} fmt
+ * @param {...} var_args
  * @return {string} Formatted string with argument substitution.
  */
-gamebuilder.util.sprintf = function(fmt) {
+gamebuilder.util.sprintf = function(fmt, var_args) {
   for (var i = 1; i < arguments.length; ++i) {
     if (gamebuilder.util.isDefAndNotNull(fmt.match('%s'))) {
       fmt = fmt.replace(/%s/, arguments[i]);

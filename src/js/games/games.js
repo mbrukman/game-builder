@@ -12,32 +12,137 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-gamebuilder.games = {};
+goog.provide('gamebuilder.games');
+
+goog.require('gamebuilder.util');
+
 
 /**
+ * TODO: document.
+ *
+ * @constructor
+ */
+gamebuilder.games.Piece = function() {
+};
+
+
+/**
+ * TODO: document.
+ *
+ * @param {?gamebuilder.games.Piece} opt_piece
+ * @constructor
+ */
+gamebuilder.games.BoardLocation = function(opt_piece) {
+  /**
+   * @type {?gamebuilder.games.Piece}
+   * @protected
+   */
+  this.piece_ = opt_piece || null;
+};
+
+/**
+ * Sets a piece at this board location.
+ *
+ * @param {?gamebuilder.games.Piece} opt_piece
+ */
+gamebuilder.games.BoardLocation.prototype.setPiece = function(opt_piece) {
+  this.piece_ = opt_piece || null;
+};
+
+/**
+ * Gets a piece at this board location, if any.
+ *
+ * @return {?gamebuilder.games.Piece} Returns the piece, if any.
+ */
+gamebuilder.games.BoardLocation.prototype.getPiece = function() {
+  return this.piece_;
+};
+
+
+/**
+ * TODO: document.
+ *
  * @param {number} m
  * @param {number} n
  * @constructor
  */
 gamebuilder.games.BoardMxN = function(m, n) {
   /**
-   * @type {Array.<Array.<?>>}
+   * @type {Array.<Array.<gamebuilder.games.BoardLocation>>}
+   * @protected
    */
   this.board_ = [];
   for (var i = 0; i < n; ++i) {
     this.board_[i] = [];
     for (var j = 0; j < m; ++j) {
-      this.board_[i][j] = null;
+      this.board_[i][j] = new gamebuilder.games.BoardLocation(null);
     }
   }
 };
 
 /**
- * @param {Piece} piece
- * @param {?} pos
+ * TODO: document.
+ *
+ * @return {number} number of rows on this board.
  */
-gamebuilder.games.BoardMxN.prototype.placePieceAtPos = function(piece, pos) {
-  this.placePieceAtCoords_(piece, gamebuilder.games.stringPosToCoords(pos));
+gamebuilder.games.BoardMxN.prototype.numRows = function() {
+  return this.board_.length;
+};
+
+/**
+ * TODO: document.
+ *
+ * @return {number} number of columns on this board.
+ */
+gamebuilder.games.BoardMxN.prototype.numCols = function() {
+  // Given that the board is rectangular, all the rows are the same size.
+  return this.board_[0].length;
+};
+
+/**
+ * TODO: document.
+ *
+ * @param {Array.<number>} coords
+ * @return {gamebuilder.games.BoardLocation}
+ * @protected
+ */
+gamebuilder.games.BoardMxN.prototype.getLoc = function(coords) {
+  // Will throw an error if invalid.
+  this.validateCoords(coords);
+  return this.board_[coords[0]][coords[1]];
+};
+
+/**
+ * TODO: document.
+ *
+ * @param {Array.<number>} coords
+ * @param {gamebuilder.games.BoardLocation} loc
+ */
+gamebuilder.games.BoardMxN.prototype.setLoc = function(coords, loc) {
+  // Will throw an error if invalid.
+  this.validateCoords(coords);
+  this.board_[coords[0]][coords[1]] = loc;
+};
+
+/**
+ * TODO: document.
+ *
+ * @param {gamebuilder.games.Piece} piece
+ * @param {string} pos
+ */
+gamebuilder.games.BoardMxN.prototype.setPieceAtPos = function(piece, pos) {
+  var coords = gamebuilder.games.stringPosToCoords(pos);
+  this.setPieceAtCoords(piece, coords);
+};
+
+/**
+ * TODO: document.
+ *
+ * @param {string} pos
+ * @export
+ */
+gamebuilder.games.BoardMxN.prototype.erasePieceAtPos = function(pos) {
+  this.setPieceAtPos(null, pos);
 };
 
 gamebuilder.games.BoardMxN.prototype.validateCoords = function(coords) {
@@ -50,36 +155,46 @@ gamebuilder.games.BoardMxN.prototype.validateCoords = function(coords) {
 };
 
 /**
- * @param {Piece} piece
+ * TODO: document.
+ *
+ * @param {gamebuilder.games.Piece} piece
  * @param {Array.<number>} coords A 2-element array that specifies the
  *     board-relative coordinates.
- * @private
+ * @protected
  */
-gamebuilder.games.BoardMxN.prototype.placePieceAtCoords_ =
+gamebuilder.games.BoardMxN.prototype.setPieceAtCoords =
     function(piece, coords) {
-  // Will throw an error if invalid.
-  this.validateCoords(coords);
-  this.board_[coords[0]][coords[1]] = piece;
-}
+  var loc = this.getLoc(coords);
+  loc.setPiece(piece);
+};
 
 /**
- * @private
+ * TODO: document.
+ *
+ * @param {Array.<number>} coords
  */
-gamebuilder.games.BoardMxN.prototype.getPieceAtCoords_ = function(coords) {
-  // Will throw an error if invalid.
-  this.validateCoords(coords);
-  return this.board_[coords[0]][coords[1]];
+gamebuilder.games.BoardMxN.prototype.erasePieceAtCoords = function(coords) {
+  this.setPieceAtCoords(null, coords);
 };
+
+/**
+ * @return {gamebuilder.games.Piece}
+ */
+gamebuilder.games.BoardMxN.prototype.getPieceAtCoords = function(coords) {
+  var loc = this.getLoc(coords);
+  return loc.getPiece();
+};
+
 
 /**
  * @param {number} n
  * @constructor
+ * @extends {gamebuilder.games.BoardMxN}
  */
 gamebuilder.games.BoardNxN = function(n) {
   gamebuilder.games.BoardMxN.call(this, n, n);
 };
-gamebuilder.util.inherits(gamebuilder.games.BoardNxN,
-                          gamebuilder.games.BoardMxN);
+goog.inherits(gamebuilder.games.BoardNxN, gamebuilder.games.BoardMxN);
 
 /**
  * Given a string board position, converts it into an ordered pair (x, y),
@@ -88,8 +203,8 @@ gamebuilder.util.inherits(gamebuilder.games.BoardNxN,
  *
  * The output is zero-based pair of array indices.
  *
- * @param name A string position such as "j10".
- * @return {Array<number>} Array of 2 ints representing the position.
+ * @param {string} name A string position such as "j10".
+ * @return {Array.<number>} Array of 2 ints representing the position.
  */
 gamebuilder.games.stringPosToCoords = function(name) {
   if (name.length < 2) {
@@ -104,7 +219,7 @@ gamebuilder.games.stringPosToCoords = function(name) {
  *
  * @param {Array.<number>} coords A pair of integers, representing a position
  *     on the board, implementation-specific; not user-visible.
- * @param {string} A lower-case string position such as 'i5'.
+ * @return {string} A lower-case string position such as 'i5'.
  */
 gamebuilder.games.coordsToStringPos = function(coords) {
   return gamebuilder.util.sprintf('%s%s',

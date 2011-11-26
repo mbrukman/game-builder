@@ -12,20 +12,30 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+goog.provide('gamebuilder.games.chess.theme');
+
+goog.require('gamebuilder.games.chess');
+
+
 /**
- * Stores the design of this board.
+ * Represents the style of the chess board.
  *
- * @param {Array.<string>} colors CSS class names, order: {light, dark}
- * @param {string} images_root
- * @param {Array.<Array<string>>} images A 2x8 array with the format:
+ * @param {Array.<string>} colors CSS class names, order: {light, dark}.
+ * @param {string} images_root Root directory for images.
+ * @param {Array.<Array.<string>>} images A 2x8 array with the format:
  *     {{white pieces}, {black pieces}}; order of pieces:
  *     pawn, knight, bishop, rook, queen, king.
- * @param {string} piece_img_class
+ * @param {string} piece_img_class CSS class for piece images.
+ *
+ * @constructor
+ * @export
  */
-gamebuilder.games.chess.Theme = function(colors, images_root, images,
-                                         piece_img_class) {
+gamebuilder.games.chess.theme.Theme = function(colors, images_root, images, piece_img_class) {
   /**
-   * @type {Array<string>}
+   * CSS classes for the board squares, in order: [light, dark].
+   * Must be of size 2.
+   *
+   * @type {Array.<string>}
    * @private
    */
   this.colors_ = colors;
@@ -34,13 +44,17 @@ gamebuilder.games.chess.Theme = function(colors, images_root, images,
   }
 
   /**
+   * Root directory for piece image files.
+   *
    * @type {string}
    * @private
    */
   this.images_root_ = images_root;
 	
   /**
-   * @type {Array.<Array<string>>}
+   * Array of paths to piece images.
+   *
+   * @type {Array.<Array.<string>>}
    * @private
    */
   this.images_ = images;
@@ -54,6 +68,8 @@ gamebuilder.games.chess.Theme = function(colors, images_root, images,
   }
 
   /**
+   * TODO: document.
+   *
    * @type {string}
    * @private
    */
@@ -61,13 +77,12 @@ gamebuilder.games.chess.Theme = function(colors, images_root, images,
 };
 
 /**
- * 
+ * Returns the CSS class of a given color.
  *
- * @param {string} One of {@chess.SquareColor.LIGHT} or
- *     {@code gamebuilder.games.chess.SquareColor.DARK}
- * @return {string} The color o
+ * @param {gamebuilder.games.chess.SquareColor} color
+ * @return {string} The CSS class of the given color.
  */
-gamebuilder.games.chess.Theme.prototype.getSquareClass = function(color) {
+gamebuilder.games.chess.theme.Theme.prototype.getSquareClass = function(color) {
   switch (color) {
     case gamebuilder.games.chess.SquareColor.LIGHT: {
       return this.colors_[0];
@@ -81,68 +96,70 @@ gamebuilder.games.chess.Theme.prototype.getSquareClass = function(color) {
   }
 };
 
-gamebuilder.games.chess.Theme.prototype.getPieceImageClass = function() {
+/**
+ * TODO: document.
+ */
+gamebuilder.games.chess.theme.Theme.prototype.getPieceImageClass = function() {
   return this.piece_image_class_;
 };
 
 /**
+ * Returns the path to an image file for the given color and piece value.
  *
- *
- * @param {string} color One of {@code gamebuilder.games.chess.Piece.WHITE} or
- *      {@code gamebuilder.games.chess.Piece.BLACK}
- * @param {string} piece One of {@code gamebuilder.games.chess.Piece.PAWN, BISHOP, KNIGHT,
- *     ROOK, QUEEN, KING}
+ * @param {gamebuilder.games.chess.PieceColor} color
+ * @param {gamebuilder.games.chess.PieceValue} value
  */
-gamebuilder.games.chess.Theme.prototype.getPieceImage = function(color, piece) {
+gamebuilder.games.chess.theme.Theme.prototype.getPieceImage = function(color, value) {
   var color_index = -1;
   switch (color) {
-    case gamebuilder.games.chess.Piece.WHITE: {
+    case gamebuilder.games.chess.PieceColor.WHITE: {
       color_index = 0;
       break;
     }
-    case gamebuilder.games.chess.Piece.BLACK: {
+    case gamebuilder.games.chess.PieceColor.BLACK: {
       color_index = 1;
       break;
     }
     default: {
-      throw new Error("Invalid color: " + color);
+      throw new Error("Invalid color: " + color.str());
     }
   }
   
   var piece_index = -1;
-  switch (piece) {
-    case gamebuilder.games.chess.Piece.PAWN: {
+  switch (value) {
+    case gamebuilder.games.chess.PieceValue.PAWN: {
       piece_index = 0;
       break;
     }
-    case gamebuilder.games.chess.Piece.KNIGHT: {
+    case gamebuilder.games.chess.PieceValue.KNIGHT: {
       piece_index = 1;
       break;
     }
-    case gamebuilder.games.chess.Piece.BISHOP: {
+    case gamebuilder.games.chess.PieceValue.BISHOP: {
       piece_index = 2;
       break;
     }
-    case gamebuilder.games.chess.Piece.ROOK: {
+    case gamebuilder.games.chess.PieceValue.ROOK: {
       piece_index = 3;
       break;
     }
-    case gamebuilder.games.chess.Piece.QUEEN: {
+    case gamebuilder.games.chess.PieceValue.QUEEN: {
       piece_index = 4;
       break;
     }
-    case gamebuilder.games.chess.Piece.KING: {
+    case gamebuilder.games.chess.PieceValue.KING: {
       piece_index = 5;
       break;
     }
     default:
-      throw new Error('Invalid piece: ' + piece);
+      throw new Error('Invalid piece: ' + value.str());
   }
 
   return this.images_root_ + '/' + this.images_[color_index][piece_index];
 };
 
 /**
- * @type {chess.Theme}
+ * @type {gamebuilder.games.chess.theme.Theme}
+ * @export
  */
-gamebuilder.games.chess.Theme.DEFAULT_THEME = null;
+gamebuilder.games.chess.theme.DEFAULT_THEME = null;

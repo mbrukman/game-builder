@@ -16,6 +16,8 @@
 //
 // Utility functions for writing tests.
 
+goog.provide('gamebuilder.testing');
+
 function assertArrayEquals(expected, actual) {
   assertEquals(
       gamebuilder.util.sprintf('Different sizes: expected (%s) vs. actual (%s)',

@@ -12,6 +12,16 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+goog.provide('gamebuilder.games.chess.FEN');
+
+goog.require('gamebuilder.games.chess');
+goog.require('gamebuilder.games.chess.ui');
+
+
+/**
+ * @constructor
+ * @export
+ */
 gamebuilder.games.chess.FEN = function() {
   /**
    * @type {gamebuilder.games.chess.Board}
@@ -28,7 +38,7 @@ gamebuilder.games.chess.FEN = function() {
  *
  * @param {string} fen The FEN for this diagram.
  * @param {Array.<string>} errors
- * @returns {boolean} true if parsed correctly; false otherwise
+ * @return {boolean} true if parsed correctly; false otherwise
  */
 gamebuilder.games.chess.FEN.prototype.parse = function(fen, errors) {
   fen = fen.replace(/\n/g, ' ').replace(/\r/g, ' ');
@@ -54,10 +64,10 @@ gamebuilder.games.chess.FEN.prototype.parse = function(fen, errors) {
   // Debug!
   errors.push(pieces);
   var piece_rows = pieces.split('/');
+  var rows = this.chess_board_.numRows();
   for (var r = 0, row; row = piece_rows[r]; ++r) {
-    if (r >= this.chess_board_.length) {
-      errors.push('Row ' + (r + 1) + ' is outside board size: ' +
-                  this.chess_board_.length);
+    if (r >= rows) {
+      errors.push('Row ' + (r + 1) + ' is outside board size: ' + rows);
       return false;
     }
     var board_col = 0;
@@ -97,14 +107,20 @@ gamebuilder.games.chess.FEN.prototype.parse = function(fen, errors) {
 };
 
 /**
+ * TODO: document.
+ *
  * @param {Node} node
+ * @private
  */
-gamebuilder.games.chess.FEN.prototype.attachDiagramToNode = function(node) {
-  this.chess_board_.displayHtml(node);
+gamebuilder.games.chess.FEN.prototype.attachDiagramToNode_ = function(node) {
+  gamebuilder.games.chess.ui.displayHtml(this.chess_board_, node);
 };
 
 /**
+ * Rewrites all FEN strings present in the document in containers of CSS class
+ * 'gamebuilder_chess_fen' to be proper chess diagrams.
  *
+ * @export
  */
 gamebuilder.games.chess.FEN.parseAllFenInDocument = function() {
   var elts = document.getElementsByClassName('gamebuilder_chess_fen');
@@ -116,7 +132,7 @@ gamebuilder.games.chess.FEN.parseAllFenInDocument = function() {
     var errors = [];
     if (fen.parse(container.innerHTML, errors)) {
       container.innerHTML = '';
-      fen.attachDiagramToNode(container);
+      fen.attachDiagramToNode_(container);
     } else {
       container.innerHTML = 'Error: ' + errors.join('<br>');
     }
