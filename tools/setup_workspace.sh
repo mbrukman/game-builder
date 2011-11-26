@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/bash -eu
 #
 # Copyright 2009 Google Inc.
 #
@@ -23,33 +23,34 @@
 #   * Closure (library + compiler)
 #   * JsUnit
 
-set -o errexit
-set -o nounset
-
-if [[ ! -d third_party ]]; then
+if [ ! -d third_party ]; then
   mkdir third_party
 fi
 cd third_party
 
 # Download Closure compiler.
-if [[ ! -d closure-compiler ]]; then
+if [ ! -d closure-compiler ]; then
   mkdir closure-compiler && cd closure-compiler
   echo "Downloading Closure compiler..."
   curl http://closure-compiler.googlecode.com/files/compiler-latest.tar.gz \
        -o closure-compiler.tar.gz
   tar zxf closure-compiler.tar.gz
   cd ..
+else
+  echo "Closure compiler already exists; skipping."
 fi
 
 # Download Closure library.
-if [[ ! -d closure-library ]]; then
+if [ ! -d closure-library ]; then
   echo "Exporting Closure library from SVN..."
   svn -q export "http://closure-library.googlecode.com/svn/trunk@9" closure-library
   rm -rf closure-library/closure/docs
+else
+  echo "Closure library already exists; skipping."
 fi
 
 # Grab relevant parts of JsUnit that we need for testing.
-if [[ ! -d jsunit ]]; then
+if [ ! -d jsunit ]; then
   mkdir jsunit && cd jsunit
   echo "Exporting JsUnit parts from SVN..."
 
@@ -58,11 +59,13 @@ if [[ ! -d jsunit ]]; then
   readonly JSUNIT_PARTS="app images lib testRunner.html"
 
   for part in ${JSUNIT_PARTS}; do
-    if [[ ! -e ${part} ]]; then
+    if [ ! -e ${part} ]; then
       svn -q export ${JSUNIT_SVN_BASE}/${part}@${JSUNIT_SVN_REV}
     fi
   done
   cd ..
+else
+  echo "JsUnit library already exists; skipping."
 fi
 
 echo Done.
