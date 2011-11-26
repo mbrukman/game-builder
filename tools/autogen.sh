@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/bash -eu
 #
 # Copyright 2009 Google Inc.
 #
@@ -22,9 +22,6 @@
 # Sample usage:
 #   autogen.sh file.js
 #   autogen.sh file.py
-
-set -o errexit
-set -o nounset
 
 LICENSE="$(dirname $0)/apache-2.0-header.txt"
 
@@ -107,13 +104,10 @@ case $1 in
     ;;
 
   *.sh)
-    echo "#!/bin/bash"
+    echo "#!/bin/bash -eu"
     echo "#"
     printLicenseHashComment
     printFileCommentTemplate "#"
-    echo
-    echo "set -o errexit"
-    echo "set -o nounset"
     ;;
 
   Makefile | Makefile.*)
