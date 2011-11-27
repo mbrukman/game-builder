@@ -112,6 +112,7 @@ case $1 in
 
   Makefile | Makefile.*)
     printLicenseHashComment
+    printFileCommentTemplate "#"
     ;;
 
   *)
