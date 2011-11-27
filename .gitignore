@@ -1,0 +1,5 @@
+# Git file patterns to ignore for those using git-svn and in case we decide to
+# switch from SVN to Git.
+demo/out/*.err
+src/py/*.pyc
+third_party
