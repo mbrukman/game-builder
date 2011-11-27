@@ -1,16 +1,13 @@
 <html>
 <head>
   <link href="../data/css/go.css" rel="stylesheet">
-  <script src="../src/js/gamebuilder.js"></script>
-  <script src="../src/js/util/util.js"></script>
-  <script src="../src/js/games/games.js"></script>
-  <script src="../src/js/games/go/go.js"></script>
+  <script src="out/go_out.js"></script>
   <style type="text/css">
     .sel { border: 2px solid #224499; }
     .notsel { border: 2px solid white; }
   </style>
 </head>
-<body>
+<body onload="demo.go.displayGoBoard()">
 
   <table border=0>
   <tr>
@@ -31,93 +28,6 @@
     </td>
   </tr>
   </table>
-
-  <script>
-    var games = gamebuilder.games;
-    var go = games.go;
-
-    var currentColor = go.PieceColor.BLACK;
-    var colorToId = [
-      [go.PieceColor.BLACK, 'blackPiece'],
-      [go.PieceColor.WHITE, 'whitePiece'],
-      [null               , 'emptyPiece']
-    ];
-
-    function updateNextPiece() {
-      for (var i = 0; i < colorToId.length; ++i) {
-        var elt = document.getElementById(colorToId[i][1]);
-        // FIXME: we should be able to set the border via
-        //   elt.style.className = 'sel';
-        // but that doesn't seem to work.
-        if (currentColor == colorToId[i][0]) {
-          elt.style.border = '2px solid #224499';
-        } else {
-          elt.style.border = '2px solid white';
-        }
-      }
-    }
-
-    /**
-     * @param {gameboard.games.go.Board} board The board controller.
-     * @param {HTMLTableElement} table The visible board.
-     * @param {string} pos Position on the board where to place the piece.
-     */
-    function placePiece(board, table, pos) {
-      if (gamebuilder.util.isDefAndNotNull(currentColor)) {
-        board.placeColorAtPos(currentColor, pos);
-      } else {
-        board.erasePieceAtPos(pos);
-      }
-      board.update(table);
-      updateNextPiece();
-    }
-
-    function createColorChangeClosure(color) {
-      return function() {
-        currentColor = color;
-        updateNextPiece();
-      };
-    }
-
-    /**
-     * Handle key presses from the user.
-     */
-    function captureKeypress(key) {
-      var which = String.fromCharCode(key.which).toLowerCase();
-      if (which == 'b') {
-        currentColor = go.PieceColor.BLACK;
-      } else if (which == 'w') {
-        currentColor = go.PieceColor.WHITE;
-      } else if (which == 'e') {
-        currentColor = null;
-      }
-      updateNextPiece();
-    }
-
-    // Create and display the board.
-    var board = new go.Board9();
-    board.setImagePath('../data/images/go');
-    var table = board.create();
-    document.getElementById('board').appendChild(table);
-
-    // Setup pieces in the legend.
-    for (var i = 0; i < colorToId.length; ++i) {
-      var color = colorToId[i][0];
-      var piece = null;
-      if (gamebuilder.util.isDefAndNotNull(color)) {
-        piece = new go.Piece(color);
-      }
-      var img = board.imageForPiece(piece);
-      img.onclick = createColorChangeClosure(color);
-      document.getElementById(colorToId[i][1]).appendChild(img);
-    }
-
-    board.update(table);
-    board.bindEmptyCells(table, placePiece);
-    updateNextPiece();
-
-    document.onkeypress = captureKeypress;
-  </script>
 
 </body>
 </html>
