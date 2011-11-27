@@ -18,13 +18,19 @@
 #
 # Generates all compiled Javascript files for the demos.
 
-if [[ "$(basename $(pwd))" != "demo" ]]; then
-  echo "$(basename $0): must run from the 'demo' directory." >&2
+err_exit() {
+  echo -e "$(basename $0): $@" >&2
   exit 1
+}
+
+if [[ "$(basename $(pwd))" != "demo" ]]; then
+  err_exit "must run from the 'demo' directory."
 fi
 
 readonly GAMEBUILDER=".."
 readonly RUN_CLOSURE_COMPILER="${GAMEBUILDER}/tools/run_closure_compiler.sh"
+
+COMPILER_FLAGS=""
 
 # Args:
 #   $1: base file pattern for output and compiler stderr output.
@@ -38,6 +44,7 @@ run_closure_compiler() {
 
   echo -n "Building $output (errors in $stderr) ... "
   env GAMEBUILDER=${GAMEBUILDER} \
+      COMPILER_FLAGS="${COMPILER_FLAGS}" \
       ${RUN_CLOSURE_COMPILER} \
       -o script \
       --output_file="$output" \
@@ -52,6 +59,17 @@ run_closure_compiler() {
   }
   echo "done."
 }
+
+while getopts 'dO:' OPTION; do
+  case $OPTION in
+    d) COMPILER_FLAGS="-d"
+       ;;
+    O) COMPILER_FLAGS="-O ${OPTARG}"
+       ;;
+    *) exit 1
+       ;;
+  esac
+done
 
 run_closure_compiler chess_fen demo.chess
 run_closure_compiler go demo.go

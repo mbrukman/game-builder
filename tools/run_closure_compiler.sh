@@ -27,9 +27,16 @@ readonly CLOSURE_BUILDER="${CLOSURE_LIBRARY}/closure/bin/build/closurebuilder.py
 readonly CLOSURE_COMPILER="${GAMEBUILDER}/third_party/closure-compiler"
 readonly CLOSURE_COMPILER_JAR="${CLOSURE_COMPILER}/compiler.jar"
 
-notfound_err_exit() {
-  echo -e "$(basename $0): $1 not found; run\ntools/setup_workspace.sh" >&2
+# Externally-passed in flags via environment.
+readonly COMPILER_FLAGS="${COMPILER_FLAGS:-}"
+
+err_exit() {
+  echo -e "$(basename $0): $@" >&2
   exit 1
+}
+
+notfound_err_exit() {
+  err_exit "$1 not found; run\ntools/setup_workspace.sh"
 }
 
 if [ ! -d ${CLOSURE_LIBRARY} ]; then
@@ -67,13 +74,32 @@ readonly COMPILER_OPT1="\
 
 readonly COMPILER_OPT2="-f --compilation_level=ADVANCED_OPTIMIZATIONS"
 
+COMPILER_DBG_OR_OPT="${COMPILER_OPT2}"
+
+while getopts 'dO:' OPTION "${COMPILER_FLAGS}"; do
+  case $OPTION in
+    d) COMPILER_DBG_OR_OPT="${COMPILER_DBG}"
+       ;;
+    O) if [ ${OPTARG} -eq 1 ]; then
+         COMPILER_DBG_OR_OPT="${COMPILER_OPT1}"
+       elif [ ${OPTARG} -eq 2 ]; then
+         COMPILER_DBG_OR_OPT="${COMPILER_OPT2}"
+       else
+         err_exit "invalid flag value -O ${OPTARG} (allowed: 1, 2)"
+       fi
+       ;;
+    *) exit 1
+       ;;
+  esac
+done
+
 ${CLOSURE_BUILDER} \
     --compiler_jar=${CLOSURE_COMPILER_JAR} \
     --root=${CLOSURE_LIBRARY} \
     --root=${GAMEBUILDER}/src/js \
     "$@" \
     -o compiled \
-    ${COMPILER_DBG} \
+    ${COMPILER_DBG_OR_OPT} \
     -f "--generate_exports" \
     -f "--warning_level=VERBOSE" \
     $(jscomp_error_flags)
