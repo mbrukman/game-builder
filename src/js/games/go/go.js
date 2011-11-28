@@ -145,7 +145,7 @@ gamebuilder.games.go.BoardMxN.prototype.setPieceColorAtPos =
 };
 
 /**
- * TODO: document.
+ * Returns the piece at the given coordinates (or null if none).
  *
  * @param {Array.<number>} coords A pair of numbers representing the coordinates.
  * @return {?gamebuilder.games.go.Piece} The piece at the coords, if any, or null.
@@ -158,6 +158,18 @@ gamebuilder.games.go.BoardMxN.prototype.getPieceAtCoords = function(coords) {
     return piece;
   }
   return null;
+}
+
+/**
+ * Returns the piece at the given position (or null if none).
+ *
+ * @param {string} pos The coordinate on the board, e.g. 'e7' or 'g10'.
+ * @return {?gamebuilder.games.go.Piece} The piece at the coords, if any, or null.
+ * @export
+ */
+gamebuilder.games.go.BoardMxN.prototype.getPieceAtPos = function(pos) {
+  var coords = gamebuilder.games.stringPosToCoords(pos);
+  return this.getPieceAtCoords(coords);
 }
 
 

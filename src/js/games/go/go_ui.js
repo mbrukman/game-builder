@@ -48,13 +48,13 @@ gamebuilder.games.go.ui.BoardUI = function(board) {
    * @type {boolean}
    * @private
    */
-  this.table_initialized_ = false;
+  this.initialized_ = false;
 
   /**
    * @type {string}
    * @private
    */
-  this.image_path_ = 'Error: call setImagePath() to set the path';
+  this.image_path_ = '';
 };
 
 /**
@@ -106,18 +106,18 @@ gamebuilder.games.go.ui.BoardUI.prototype.newImageForPiece = function(piece) {
 };
 
 /**
- * Returns the HTML version of the underlying board.  The table is a singleton;
- * calling this function multiple times will always return the same table.
- *
- * @return {Element} The table containing the contents of the Go board.
+ * Initializes the display of the HTML table.
  */
-gamebuilder.games.go.ui.BoardUI.prototype.getHtmlTable = function() {
+gamebuilder.games.go.ui.BoardUI.prototype.init = function() {
+  if (this.initialized_) {
+    return;
+  } else if (this.image_path_ == '') {
+    throw new Error('Error: call BoardUI.setImagePath() prior to ' +
+                    'calling BoardUI.init()');
+  }
+
   var board = this.board_;
   var table = this.table_;
-
-  if (this.table_initialized_) {
-    return table;
-  }
 
   table.cellSpacing = 0;
   table.cellPadding = 0;
@@ -159,8 +159,20 @@ gamebuilder.games.go.ui.BoardUI.prototype.getHtmlTable = function() {
     }
   }
 
-  this.table_initialized_ = true;
-  return table;
+  this.initialized_ = true;
+};
+
+/**
+ * Returns the HTML version of the underlying board.  The table is a singleton;
+ * calling this function multiple times will always return the same table.
+ *
+ * @return {Element} The table containing the contents of the Go board.
+ */
+gamebuilder.games.go.ui.BoardUI.prototype.getHtmlTable = function() {
+  if (!this.initialized_) {
+    this.init();
+  }
+  return this.table_;
 };
 
 /**
