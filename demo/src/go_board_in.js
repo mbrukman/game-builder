@@ -42,14 +42,7 @@ var colorToId = [
 function updateNextPiece() {
   for (var i = 0; i < colorToId.length; ++i) {
     var elt = document.getElementById(colorToId[i][1]);
-    // FIXME: we should be able to set the border via
-    //   elt.style.className = 'sel';
-    // but that doesn't seem to work.
-    if (currentColor == colorToId[i][0]) {
-      elt.style.border = '2px solid #224499';
-    } else {
-      elt.style.border = '2px solid white';
-    }
+    elt.className = (currentColor == colorToId[i][0]) ? 'sel' : 'notsel';
   }
 }
 
