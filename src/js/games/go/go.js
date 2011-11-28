@@ -123,7 +123,8 @@ gamebuilder.games.go.BoardMxN = function(m, n) {
     this.board_[i] = [];
     for (var j = 0; j < m; ++j) {
       var loc = new gamebuilder.games.go.BoardLocation();
-      //this.setLoc([i, j], loc); 
+      // TODO: investigate why this doesn't work.
+      // this.setLoc([i, j], loc);
       this.board_[i][j] = loc;
     }
   }
