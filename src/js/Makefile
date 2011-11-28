@@ -23,9 +23,16 @@ include $(ROOT)/src/Makefile.common
 
 # Get all the Javascript files in our tree, without the leading "./" prefix that
 # find(1) prepends to all paths.
-ALL_JS_FILES = $(shell find . -name \*\.js -type f | sed 's,^\./,,')
+DEPS_JS = deps.js
+ALL_JS_FILES := $(shell find . -name \*\.js -type f \
+                      | sed 's,^\./,,' \
+                      | grep -v $(DEPS_JS))
 
-deps: $(ALL_JS_FILES)
+$(DEPS_JS): $(ALL_JS_FILES)
 	$(VERB) echo -n "Generating Javascript dependencies ... "
-	$(VERB) $(DEPSWRITER) $(ALL_JS_FILES) > deps.js
+	$(VERB) $(DEPSWRITER) $(ALL_JS_FILES) > $@
 	$(VERB) echo "done."
+
+deps: $(DEPS_JS)
+
+all: deps
