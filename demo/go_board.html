@@ -1,18 +1,19 @@
 <html>
 <head>
   <link href="../data/css/go.css" rel="stylesheet">
-  <!-- Compiled from src/go_in.js via compile_js.sh -->
-  <script src="out/go_out.js"></script>
+  <!-- Compiled from src/go_board_in.js via compile_js.sh -->
+  <script src="out/go_board_out.js"></script>
   <style type="text/css">
     .sel { border: 2px solid #224499; }
     .notsel { border: 2px solid white; }
   </style>
 </head>
-<body onload="demo.go.displayGoBoard()">
+<body onload="demo.go.board.displayGoBoard()">
 
   <table border=0>
   <tr>
     <td><div id='board'></div></td>
+    <td width="40px"></td>
     <td>Keys:
       <ul>
       <li><b>b</b> - place black pieces</li>

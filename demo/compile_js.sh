@@ -72,7 +72,7 @@ while getopts 'dO:' OPTION; do
 done
 
 run_closure_compiler chess_fen demo.chess
-run_closure_compiler go demo.go
+run_closure_compiler go_board demo.go.board
 
 echo
 echo "JS compilation complete."

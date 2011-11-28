@@ -16,7 +16,7 @@
 //
 // Demo usage of Go library.
 
-goog.provide('demo.go');
+goog.provide('demo.go.board');
 
 goog.require('gamebuilder.games.go');
 goog.require('gamebuilder.games.go.ui');
@@ -105,7 +105,7 @@ function captureKeypress(key) {
  *
  * @export
  */
-demo.go.displayGoBoard = function() {
+demo.go.board.displayGoBoard = function() {
   // Create and display the board.
   var board = new gamebuilder.games.go.Board9();
   var board_ui = new gamebuilder.games.go.ui.BoardUI(board);
