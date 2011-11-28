@@ -1,0 +1,14 @@
+table.reversi-holder {
+  border: 0;
+  background: #c87137;
+  padding: 25px;
+}
+table.reversi {
+  border: 1px solid black;
+  background: #c87137;
+}
+td.reversi {
+  height: 50px;
+  width: 50px;
+  border: 1px solid black;
+}
