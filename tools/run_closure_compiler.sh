@@ -62,17 +62,22 @@ jscomp_error_flags() {
 }
 
 readonly COMPILER_DBG="\
+    -o script \
     -f --compilation_level=WHITESPACE_ONLY \
     -f --debug \
     -f --formatting=PRETTY_PRINT \
 "
 
 readonly COMPILER_OPT1="\
+    -o compiled \
     -f --compilation_level=SIMPLE_OPTIMIZATIONS \
     -f --formatting=PRETTY_PRINT \
 "
 
-readonly COMPILER_OPT2="-f --compilation_level=ADVANCED_OPTIMIZATIONS"
+readonly COMPILER_OPT2="\
+    -o compiled \
+    -f --compilation_level=ADVANCED_OPTIMIZATIONS \
+"
 
 COMPILER_DBG_OR_OPT="${COMPILER_OPT2}"
 
@@ -98,7 +103,6 @@ ${CLOSURE_BUILDER} \
     --root=${CLOSURE_LIBRARY} \
     --root=${GAMEBUILDER}/src/js \
     "$@" \
-    -o compiled \
     ${COMPILER_DBG_OR_OPT} \
     -f "--generate_exports" \
     -f "--warning_level=VERBOSE" \
