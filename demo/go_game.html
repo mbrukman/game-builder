@@ -1,0 +1,30 @@
+<html>
+<head>
+  <link href="../data/css/go.css" rel="stylesheet">
+  <!-- Compiled from src/go_game_in.js via compile_js.sh -->
+  <script src="out/go_game_out.js"></script>
+  <style type="text/css">
+    .sel { border: 2px solid #224499; }
+    .notsel { border: 2px solid white; }
+  </style>
+</head>
+<body onload="demo.go.game.playGoGame()">
+
+  <table border=0>
+  <tr>
+    <td><div id='board'></div></td>
+    <td width="40px"></td>
+    <td>Next move:<br>
+      <table>
+        <tr>
+          <td id='blackPiece'><span></span></td>
+          <td id='whitePiece'><span></span></td>
+        </tr>
+      </table>
+      Click on the board to place pieces.
+    </td>
+  </tr>
+  </table>
+
+</body>
+</html>
