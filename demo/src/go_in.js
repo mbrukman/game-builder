@@ -19,18 +19,25 @@
 goog.provide('demo.go');
 
 goog.require('gamebuilder.games.go');
+goog.require('gamebuilder.games.go.ui');
 
-
+/**
+ * @type {?gamebuilder.games.go.PieceColor}
+ * @private
+ */
 var currentColor = gamebuilder.games.go.PieceColor.BLACK;
+
+/**
+ * @private
+ */
 var colorToId = [
   [gamebuilder.games.go.PieceColor.BLACK, 'blackPiece'],
   [gamebuilder.games.go.PieceColor.WHITE, 'whitePiece'],
-  [null               , 'emptyPiece']
+  [null, 'emptyPiece']
 ];
 
 /**
- * TODO: document.
- *
+ * Updates the outline around the to-be-placed-next piece in the UI.
  */
 function updateNextPiece() {
   for (var i = 0; i < colorToId.length; ++i) {
@@ -49,20 +56,26 @@ function updateNextPiece() {
 /**
  * TODO: document.
  *
- * @param {gamebuilder.games.go.BoardNxN} board The board controller.
- * @param {HTMLTableElement} table The visible board.
+ * @param {gamebuilder.games.go.ui.BoardUI} board_ui The visible board handler.
+ * @param {gamebuilder.games.go.BoardMxN} board The board controller.
  * @param {string} pos Position on the board where to place the piece.
  */
-function placePiece(board, table, pos) {
+function placePiece(board_ui, board, pos) {
   if (gamebuilder.util.isDefAndNotNull(currentColor)) {
     board.setPieceColorAtPos(currentColor, pos);
   } else {
     board.erasePieceAtPos(pos);
   }
-  board.update(table);
+  board_ui.update();
   updateNextPiece();
 }
 
+/**
+ * TODO: document.
+ *
+ * @param {?gamebuilder.games.go.PieceColor} color
+ * @return {Function}
+ */
 function createColorChangeClosure(color) {
   return function() {
     currentColor = color;
@@ -95,9 +108,9 @@ function captureKeypress(key) {
 demo.go.displayGoBoard = function() {
   // Create and display the board.
   var board = new gamebuilder.games.go.Board9();
-  board.setImagePath('../data/images/go');
-  var table = board.createHtmlTable();
-  document.getElementById('board').appendChild(table);
+  var board_ui = new gamebuilder.games.go.ui.BoardUI(board);
+  board_ui.setImagePath('../data/images/go');
+  document.getElementById('board').appendChild(board_ui.getHtmlTable());
   
   // Setup pieces in the legend.
   for (var i = 0; i < colorToId.length; ++i) {
@@ -106,13 +119,13 @@ demo.go.displayGoBoard = function() {
     if (gamebuilder.util.isDefAndNotNull(color)) {
       piece = new gamebuilder.games.go.Piece(color);
     }
-    var img = board.imageForPiece(piece);
+    var img = board_ui.newImageForPiece(piece);
     img.onclick = createColorChangeClosure(color);
     document.getElementById(colorToId[i][1]).appendChild(img);
   }
 
-  board.update(table);
-  board.bindEmptyCells(table, placePiece);
+  board_ui.update();
+  board_ui.bindEmptyCells(placePiece);
   updateNextPiece();
   
   document.onkeypress = captureKeypress;
