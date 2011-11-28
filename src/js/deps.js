@@ -7,6 +7,8 @@ goog.addDependency('games/chess/theme.js', ['gamebuilder.games.chess.theme'], ['
 goog.addDependency('games/chess/ui.js', ['gamebuilder.games.chess.ui'], ['gamebuilder.games.chess', 'gamebuilder.games.chess.theme', 'gamebuilder.util']);
 goog.addDependency('games/games.js', ['gamebuilder.games'], ['gamebuilder.util']);
 goog.addDependency('games/go/go.js', ['gamebuilder.games.go'], ['gamebuilder.games']);
+goog.addDependency('games/go/go_game.js', ['gamebuilder.games.go.game'], ['gamebuilder.games.go', 'gamebuilder.games.go.ui']);
+goog.addDependency('games/go/go_ui.js', ['gamebuilder.games.go.ui'], ['gamebuilder.games.go']);
 goog.addDependency('net/net.js', ['gamebuilder.net'], []);
 goog.addDependency('testing/testing.js', ['gamebuilder.testing'], []);
 goog.addDependency('util/util.js', ['gamebuilder.util'], []);
