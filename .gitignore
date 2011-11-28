@@ -1,5 +1,6 @@
 # Git file patterns to ignore for those using git-svn and in case we decide to
 # switch from SVN to Git.
 *.pyc
+*.swp
 demo/out/*.err
 third_party
