@@ -197,17 +197,6 @@ gamebuilder.games.go.ui.BoardUI.prototype.update = function() {
   var board = this.board_;
   var table = this.table_;
 
-  /*
-  if (board.numRows() != table.rows.length ||
-      board.numCols() != table.rows[0].childNodes.length) {
-    throw new Error(
-        gamebuilder.util.sprintf(
-            'Incompatible sizes: board (%s x %s) vs. table (%s x %s)',
-            board.numRows(), board.numCols(),
-            table.rows.length, table.rows[0].childNodes.length));
-  }
-  */
-
   for (var r = 0; r < table.rows.length; ++r) {
     var row = table.rows[r];
     for (var c = 0; c < row.childNodes.length; ++c) {
