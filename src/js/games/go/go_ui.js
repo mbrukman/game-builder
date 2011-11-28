@@ -112,8 +112,8 @@ gamebuilder.games.go.ui.BoardUI.prototype.init = function() {
   if (this.initialized_) {
     return;
   } else if (this.image_path_ == '') {
-    throw new Error('Error: call BoardUI.setImagePath() prior to ' +
-                    'calling BoardUI.init()');
+    throw new Error('Error: call go.BoardUI.setImagePath() prior to ' +
+                    'calling go.BoardUI.init()');
   }
 
   var board = this.board_;
