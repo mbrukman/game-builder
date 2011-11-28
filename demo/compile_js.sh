@@ -74,6 +74,7 @@ done
 run_closure_compiler chess_fen demo.chess
 run_closure_compiler go_board demo.go.board
 run_closure_compiler go_game demo.go.game
+run_closure_compiler reversi_board demo.reversi.board
 
 echo
 echo "JS compilation complete."

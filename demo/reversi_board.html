@@ -2,56 +2,14 @@
 <head>
   <link href="../data/css/reversi.css" rel="stylesheet">
   <!-- Compiled from src/reversi_board_in.js via compile_js.sh -->
-  <!-- <script src="out/reversi_board_out.js"></script> -->
+  <script src="out/reversi_board_out.js"></script>
   <style type="text/css">
     .sel { border: 2px solid #224499; }
     .notsel { border: 2px solid white; }
   </style>
 </head>
-<body>
+<body onload="demo.reversi.board.displayReversiBoard()">
 
-  <table cellpadding=0 cellspacing=0 class=reversi-holder>
-    <tr>
-      <td>
-        <table cellpadding=0 cellspacing=0 class=reversi>
-          <tr>
-              <td class=reversi></td><td class=reversi></td><td class=reversi></td><td class=reversi></td>
-              <td class=reversi></td><td class=reversi></td><td class=reversi></td><td class=reversi></td>
-          </tr>
-          <tr>
-              <td class=reversi></td><td class=reversi></td><td class=reversi></td><td class=reversi></td>
-              <td class=reversi></td><td class=reversi></td><td class=reversi></td><td class=reversi></td>
-          </tr>
-          <tr>
-              <td class=reversi></td><td class=reversi></td><td class=reversi></td><td class=reversi></td>
-              <td class=reversi></td><td class=reversi></td><td class=reversi></td><td class=reversi></td>
-          </tr>
-          <tr>
-              <td class=reversi></td><td class=reversi></td><td class=reversi></td><td class=reversi></td>
-              <td class=reversi></td><td class=reversi></td><td class=reversi></td><td class=reversi></td>
-          </tr>
-          <tr>
-              <td class=reversi></td><td class=reversi></td><td class=reversi></td><td class=reversi></td>
-              <td class=reversi></td><td class=reversi></td><td class=reversi></td><td class=reversi></td>
-          </tr>
-          <tr>
-              <td class=reversi></td><td class=reversi></td><td class=reversi></td><td class=reversi></td>
-              <td class=reversi></td><td class=reversi></td><td class=reversi></td><td class=reversi></td>
-          </tr>
-          <tr>
-              <td class=reversi></td><td class=reversi></td><td class=reversi></td><td class=reversi></td>
-              <td class=reversi></td><td class=reversi></td><td class=reversi></td><td class=reversi></td>
-          </tr>
-          <tr>
-              <td class=reversi></td><td class=reversi></td><td class=reversi></td><td class=reversi></td>
-              <td class=reversi></td><td class=reversi></td><td class=reversi></td><td class=reversi></td>
-          </tr>
-        </table>
-      </td>
-    </tr>
-  </table>
-
-<!--
   <table border=0>
   <tr>
     <td><div id='board'></div></td>
@@ -72,7 +30,6 @@
     </td>
   </tr>
   </table>
--->
 
 </body>
 </html>
