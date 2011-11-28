@@ -337,7 +337,7 @@ gamebuilder.games.chess.BoardMxN = function(m, n) {
           ? gamebuilder.games.chess.SquareColor.DARK
           : gamebuilder.games.chess.SquareColor.LIGHT,
           null);
-      //this.setLoc([i, j], boardSquare); 
+      //this.setLoc([i, j], boardSquare);
       this.board_[i][j] = boardSquare;
     }
   }

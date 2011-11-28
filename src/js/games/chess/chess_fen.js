@@ -91,7 +91,7 @@ gamebuilder.games.chess.FEN.prototype.parse = function(fen, errors) {
           errors.push('Could not parse piece "' + row_char + '"');
           return false;
         }
-      }  
+      }
     }
   }
 

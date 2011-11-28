@@ -50,7 +50,7 @@ gamebuilder.games.chess.theme.Theme = function(colors, images_root, images, piec
    * @private
    */
   this.images_root_ = images_root;
-	
+
   /**
    * Array of paths to piece images.
    *
@@ -124,7 +124,7 @@ gamebuilder.games.chess.theme.Theme.prototype.getPieceImage = function(color, va
       throw new Error("Invalid color: " + color.str());
     }
   }
-  
+
   var piece_index = -1;
   switch (value) {
     case gamebuilder.games.chess.PieceValue.PAWN: {
