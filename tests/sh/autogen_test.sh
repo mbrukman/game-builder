@@ -65,6 +65,9 @@ function testValid() {
   assertEQ 1 $(autogen h_test.py | grep unittest | wc -l)
   assertLT ${MIN_LOC} $(autogen i.py | wc -l)
 
+  # Scala
+  assertLT ${MIN_LOC} $(autogen s.scala | wc -l)
+
   # Shell
   assertLT ${MIN_LOC} $(autogen j.sh | wc -l)
   assertLT ${MIN_LOC} $(autogen j_test.sh | wc -l)
