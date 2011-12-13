@@ -86,7 +86,7 @@ gamebuilder.games.reversi.ui.BoardUI.prototype.setImagePath = function(image_pat
 /**
  * setImagePath() must have been called before using this function.
  *
- * @param {gamebuilder.games.go.Piece} piece
+ * @param {gamebuilder.games.reversi.Piece} piece
  * @return {string} The path to an image corresponding to the given piece.
  *     Passing in null will return a clear transparent image, which can be used
  *     to capture user clicks for processing.
@@ -95,9 +95,9 @@ gamebuilder.games.reversi.ui.BoardUI.prototype.setImagePath = function(image_pat
 gamebuilder.games.reversi.ui.BoardUI.prototype.imagePathForPiece =
     function(piece) {
   if (gamebuilder.util.isDefAndNotNull(piece)) {
-    if (piece.color() == gamebuilder.games.go.PieceColor.BLACK) {
+    if (piece.color() == gamebuilder.games.reversi.PieceColor.BLACK) {
       return gamebuilder.util.sprintf('%s/black.png', this.image_path_);
-    } else if (piece.color() == gamebuilder.games.go.PieceColor.WHITE) {
+    } else if (piece.color() == gamebuilder.games.reversi.PieceColor.WHITE) {
       return gamebuilder.util.sprintf('%s/white.png', this.image_path_);
     } else {
       throw new Error('Invalid color of piece: ' + piece.color());
@@ -110,7 +110,7 @@ gamebuilder.games.reversi.ui.BoardUI.prototype.imagePathForPiece =
 /**
  * Creates and returns a new HTML element IMG to represent the given piece.
  *
- * @param {gamebuilder.games.go.Piece} piece
+ * @param {gamebuilder.games.reversi.Piece} piece
  * @return {Element} IMG element for the piece.
  */
 gamebuilder.games.reversi.ui.BoardUI.prototype.newImageForPiece = function(piece) {
@@ -225,7 +225,7 @@ gamebuilder.games.reversi.ui.BoardUI.prototype.getHtmlTable = function() {
 
 /**
  * Converts the coordinates on the visible table to the underlying
- * gamebuilder.games.go.Board object indices.
+ * gamebuilder.games.reversi.Board object indices.
  *
  * @param {Array.<number>} table_coords Coordinates relative to the visible
  *     table.
@@ -266,7 +266,7 @@ gamebuilder.games.reversi.ui.BoardUI.prototype.update = function() {
  *
  * @param {Function} callback
  * @param {gamebuilder.games.reversi.ui.BoardUI} board_ui
- * @param {gamebuilder.games.go.BoardMxN} board
+ * @param {gamebuilder.games.reversi.Board} board
  * @param {string} pos
  * @return {Function}
  */

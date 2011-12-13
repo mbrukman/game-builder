@@ -18,8 +18,9 @@ goog.require('gamebuilder.games');
 
 
 /**
- * TODO: document.
+ * Represents the color of a Go piece (or the color used by a player).
  *
+ * @param {string} color
  * @constructor
  */
 gamebuilder.games.go.PieceColor = function(color) {
@@ -40,16 +41,20 @@ gamebuilder.games.go.PieceColor.BLACK =
 
 
 /**
- * TODO: document.
+ * Represents a Go piece.
  *
  * @param {gamebuilder.games.go.PieceColor} color
  * @constructor
  * @extends {gamebuilder.games.Piece}
  */
 gamebuilder.games.go.Piece = function(color) {
+  // A hack to call the base ctor and satisfy Closure Compiler.
+  var base_color = /** @type {gamebuilder.games.PieceColor} */ color;
+  gamebuilder.games.Piece.call(this, base_color);
+
   /**
    * @type {gamebuilder.games.go.PieceColor}
-   * @private
+   * @protected
    */
   this.color_ = color;
 };
@@ -58,7 +63,7 @@ goog.inherits(gamebuilder.games.go.Piece,
               gamebuilder.games.Piece);
 
 /**
- * TODO: document.
+ * Returns the color of this piece.
  *
  * @return {gamebuilder.games.go.PieceColor} The color of this piece.
  */
@@ -68,39 +73,7 @@ gamebuilder.games.go.Piece.prototype.color = function() {
 
 
 /**
- * TODO: document.
- *
- * @constructor
- * @extends {gamebuilder.games.BoardLocation}
- */
-gamebuilder.games.go.BoardLocation = function() {
-  /**
-   * @type {?gamebuilder.games.go.Piece}
-   * @protected
-   */
-  this.piece_ = null;
-};
-
-/**
- * Sets a piece at this board location.
- *
- * @param {?gamebuilder.games.go.Piece} opt_piece
- */
-gamebuilder.games.go.BoardLocation.prototype.setPiece = function(opt_piece) {
-  this.piece_ = opt_piece || null;
-};
-
-/**
- * Gets a piece at this board location, if any.
- *
- * @return {?gamebuilder.games.go.Piece} Returns the piece, if any.
- */
-gamebuilder.games.go.BoardLocation.prototype.getPiece = function() {
-  return this.piece_;
-};
-
-/**
- * TODO: document.
+ * Defines a generic MxN Go board.
  *
  * @param {number} m
  * @param {number} n
@@ -109,25 +82,6 @@ gamebuilder.games.go.BoardLocation.prototype.getPiece = function() {
  */
 gamebuilder.games.go.BoardMxN = function(m, n) {
   gamebuilder.games.BoardMxN.call(this, m, n);
-
-  /**
-   * A redeclaration of a Board from the inherited {@code board_} which
-   * originally contained instances of {@code gamebuilder.games.BoardLocation}.
-   *
-   * @type {Array.<Array.<gamebuilder.games.go.BoardLocation>>}
-   * @protected
-   */
-  this.board_ = [];
-
-  for (var i = 0; i < n; ++i) {
-    this.board_[i] = [];
-    for (var j = 0; j < m; ++j) {
-      var loc = new gamebuilder.games.go.BoardLocation();
-      // TODO: investigate why this doesn't work.
-      // this.setLoc([i, j], loc);
-      this.board_[i][j] = loc;
-    }
-  }
 };
 
 goog.inherits(gamebuilder.games.go.BoardMxN, gamebuilder.games.BoardMxN);
@@ -137,11 +91,11 @@ goog.inherits(gamebuilder.games.go.BoardMxN, gamebuilder.games.BoardMxN);
  *
  * @param {gamebuilder.games.go.PieceColor} color
  * @param {string} pos string location, e.g. 'c10' or 'f9'
- * @export
+ * @public
  */
 gamebuilder.games.go.BoardMxN.prototype.setPieceColorAtPos =
     function(color, pos) {
-  this.setPieceAtPos(new gamebuilder.games.go.Piece(color), pos);
+  this.setPieceAtPos_(new gamebuilder.games.go.Piece(color), pos);
 };
 
 /**
@@ -149,15 +103,14 @@ gamebuilder.games.go.BoardMxN.prototype.setPieceColorAtPos =
  *
  * @param {Array.<number>} coords A pair of numbers representing the coordinates.
  * @return {?gamebuilder.games.go.Piece} The piece at the coords, if any, or null.
- * @export
+ * @public
  */
 gamebuilder.games.go.BoardMxN.prototype.getPieceAtCoords = function(coords) {
-  var loc = /** @type {gamebuilder.games.go.BoardLocation} */ this.getLoc(coords);
-  var piece = loc.getPiece();
-  if (gamebuilder.util.isDefAndNotNull(piece)) {
-    return piece;
-  }
-  return null;
+  // Downcast to the right piece type: this is safe because we only store
+  // objects of type go.Piece in the board ourselves.
+  var piece = /** @type {?gamebuilder.games.go.Piece} */
+      this.getPieceAtCoords_(coords);
+  return piece;
 }
 
 /**
@@ -165,7 +118,7 @@ gamebuilder.games.go.BoardMxN.prototype.getPieceAtCoords = function(coords) {
  *
  * @param {string} pos The coordinate on the board, e.g. 'e7' or 'g10'.
  * @return {?gamebuilder.games.go.Piece} The piece at the coords, if any, or null.
- * @export
+ * @public
  */
 gamebuilder.games.go.BoardMxN.prototype.getPieceAtPos = function(pos) {
   var coords = gamebuilder.games.stringPosToCoords(pos);

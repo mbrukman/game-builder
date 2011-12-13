@@ -18,44 +18,39 @@ goog.require('gamebuilder.util');
 
 
 /**
- * TODO: document.
  *
+ * @param {string} color
  * @constructor
  */
-gamebuilder.games.Piece = function() {
+gamebuilder.games.PieceColor = function(color) {
+  /**
+   * @type {string}
+   * @private
+   */
+  this.color_ = color;
 };
-
 
 /**
  * TODO: document.
  *
- * @param {?gamebuilder.games.Piece} opt_piece
+ * @param {gamebuilder.games.PieceColor} color
  * @constructor
  */
-gamebuilder.games.BoardLocation = function(opt_piece) {
+gamebuilder.games.Piece = function(color) {
   /**
-   * @type {?gamebuilder.games.Piece}
+   * @type {gamebuilder.games.PieceColor}
    * @protected
    */
-  this.piece_ = opt_piece || null;
+  this.color_ = color;
 };
 
 /**
- * Sets a piece at this board location.
+ * Returns the color of this piece.
  *
- * @param {?gamebuilder.games.Piece} opt_piece
+ * @return {gamebuilder.games.PieceColor}
  */
-gamebuilder.games.BoardLocation.prototype.setPiece = function(opt_piece) {
-  this.piece_ = opt_piece || null;
-};
-
-/**
- * Gets a piece at this board location, if any.
- *
- * @return {?gamebuilder.games.Piece} Returns the piece, if any.
- */
-gamebuilder.games.BoardLocation.prototype.getPiece = function() {
-  return this.piece_;
+gamebuilder.games.Piece.prototype.color = function () {
+  return this.color_;
 };
 
 
@@ -68,14 +63,14 @@ gamebuilder.games.BoardLocation.prototype.getPiece = function() {
  */
 gamebuilder.games.BoardMxN = function(m, n) {
   /**
-   * @type {Array.<Array.<gamebuilder.games.BoardLocation>>}
+   * @type {Array.<Array.<?gamebuilder.games.Piece>>}
    * @protected
    */
   this.board_ = [];
   for (var i = 0; i < n; ++i) {
     this.board_[i] = [];
     for (var j = 0; j < m; ++j) {
-      this.board_[i][j] = new gamebuilder.games.BoardLocation(null);
+      this.board_[i][j] = null;
     }
   }
 };
@@ -100,49 +95,36 @@ gamebuilder.games.BoardMxN.prototype.numCols = function() {
 };
 
 /**
- * TODO: document.
+ * Sets the given piece (or null if none) at the given position.
  *
- * @param {Array.<number>} coords
- * @return {gamebuilder.games.BoardLocation}
+ * @param {?gamebuilder.games.Piece} piece
+ * @param {string} pos
  * @protected
  */
-gamebuilder.games.BoardMxN.prototype.getLoc = function(coords) {
-  // Will throw an error if invalid.
-  this.validateCoords(coords);
-  return this.board_[coords[0]][coords[1]];
-};
-
-/**
- * TODO: document.
- *
- * @param {Array.<number>} coords
- * @param {gamebuilder.games.BoardLocation} loc
- */
-gamebuilder.games.BoardMxN.prototype.setLoc = function(coords, loc) {
-  // Will throw an error if invalid.
-  this.validateCoords(coords);
-  this.board_[coords[0]][coords[1]] = loc;
-};
-
-/**
- * TODO: document.
- *
- * @param {gamebuilder.games.Piece} piece
- * @param {string} pos
- */
-gamebuilder.games.BoardMxN.prototype.setPieceAtPos = function(piece, pos) {
+gamebuilder.games.BoardMxN.prototype.setPieceAtPos_ = function(piece, pos) {
   var coords = gamebuilder.games.stringPosToCoords(pos);
-  this.setPieceAtCoords(piece, coords);
+  this.setPieceAtCoords_(piece, coords);
 };
 
 /**
- * TODO: document.
+ * Returns the piece on the board at the given position, if any, or null if none.
  *
  * @param {string} pos
- * @export
+ * @return {?gamebuilder.games.Piece} the piece at the given position, if any.
+ * @protected
+ */
+gamebuilder.games.BoardMxN.prototype.getPieceAtPos_ = function(pos) {
+  var coords = gamebuilder.games.stringPosToCoords(pos);
+  this.getPieceAtCoords_(coords);
+};
+
+/**
+ * Erases the piece at the given position.
+ *
+ * @param {string} pos
  */
 gamebuilder.games.BoardMxN.prototype.erasePieceAtPos = function(pos) {
-  this.setPieceAtPos(null, pos);
+  this.setPieceAtPos_(null, pos);
 };
 
 gamebuilder.games.BoardMxN.prototype.validateCoords = function(coords) {
@@ -155,34 +137,41 @@ gamebuilder.games.BoardMxN.prototype.validateCoords = function(coords) {
 };
 
 /**
- * TODO: document.
+ * Places the given piece at the provided coordinates
  *
  * @param {gamebuilder.games.Piece} piece
  * @param {Array.<number>} coords A 2-element array that specifies the
  *     board-relative coordinates.
  * @protected
  */
-gamebuilder.games.BoardMxN.prototype.setPieceAtCoords =
+gamebuilder.games.BoardMxN.prototype.setPieceAtCoords_ =
     function(piece, coords) {
-  var loc = this.getLoc(coords);
-  loc.setPiece(piece);
+  // Will throw an error if invalid.
+  this.validateCoords(coords);
+  this.board_[coords[0]][coords[1]] = piece;
 };
 
 /**
- * TODO: document.
+ * Deletes the piece at the given coordinates.
  *
  * @param {Array.<number>} coords
+ * @protected
  */
-gamebuilder.games.BoardMxN.prototype.erasePieceAtCoords = function(coords) {
-  this.setPieceAtCoords(null, coords);
+gamebuilder.games.BoardMxN.prototype.erasePieceAtCoords_ = function(coords) {
+  this.setPieceAtCoords_(null, coords);
 };
 
 /**
+ * Returns the piece at the given coordinates.
+ *
+ * @param {Array.<number>} coords
  * @return {gamebuilder.games.Piece}
+ * @protected
  */
-gamebuilder.games.BoardMxN.prototype.getPieceAtCoords = function(coords) {
-  var loc = this.getLoc(coords);
-  return loc.getPiece();
+gamebuilder.games.BoardMxN.prototype.getPieceAtCoords_ = function(coords) {
+  // Will throw an error if invalid.
+  this.validateCoords(coords);
+  return this.board_[coords[0]][coords[1]];
 };
 
 

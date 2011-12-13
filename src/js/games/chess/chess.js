@@ -114,7 +114,7 @@ gamebuilder.games.chess.Piece = function(color, value) {
 
   /**
    * @type {gamebuilder.games.chess.PieceColor}
-   * @private
+   * @protected
    */
   this.color_ = color;
 
@@ -252,16 +252,14 @@ gamebuilder.games.chess.SquareColor.LIGHT =
 
 
 /**
- * TODO: document.
+ * Represents a single square on a chess board; both the color of the square
+ * (light or dark), and contents (piece, if any).
  *
  * @param {gamebuilder.games.chess.SquareColor} color
  * @param {?gamebuilder.games.chess.Piece} opt_piece
  * @constructor
- * @extends {gamebuilder.games.BoardLocation}
  */
 gamebuilder.games.chess.BoardSquare = function(color, opt_piece) {
-  gamebuilder.games.BoardLocation.call(this, opt_piece);
-
   /**
    * @type {gamebuilder.games.chess.Piece}
    * @protected
@@ -274,9 +272,6 @@ gamebuilder.games.chess.BoardSquare = function(color, opt_piece) {
    */
   this.color_ = color;
 };
-
-goog.inherits(gamebuilder.games.chess.BoardSquare,
-              gamebuilder.games.BoardLocation);
 
 /**
  * Sets a piece at this board location.
@@ -337,7 +332,6 @@ gamebuilder.games.chess.BoardMxN = function(m, n) {
           ? gamebuilder.games.chess.SquareColor.DARK
           : gamebuilder.games.chess.SquareColor.LIGHT,
           null);
-      //this.setLoc([i, j], boardSquare);
       this.board_[i][j] = boardSquare;
     }
   }

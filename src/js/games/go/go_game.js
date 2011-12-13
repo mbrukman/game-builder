@@ -153,8 +153,6 @@ function getPlacePieceCallback_(game) {
 
 /**
  * Initializes the HTML UI for this game, sets the callbacks to handle clicks.
- *
- * @return {Element} Visible UI for the game, in the form of an HTML table.
  */
 gamebuilder.games.go.game.GoGameNxN.prototype.init = function() {
   this.boardUi_.init();

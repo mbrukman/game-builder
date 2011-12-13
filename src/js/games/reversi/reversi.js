@@ -19,39 +19,111 @@
 
 goog.provide('gamebuilder.games.reversi');
 
-goog.require('gamebuilder.games.go');
+goog.require('gamebuilder.games');
 
 
 /**
- * Reversi {@code PieceColor} is simply an alias for {@code
- * gamebuilder.games.go.PieceColor} which we are reusing for simplicity and to
- * avoid duplication.
+ * Represents the color of a Reversi piece (or the color used by a player).
  *
+ * @param {string} color
  * @constructor
  */
-gamebuilder.games.reversi.PieceColor = gamebuilder.games.go.PieceColor;
+gamebuilder.games.reversi.PieceColor = function(color) {
+  /**
+   * @type {string}
+   * @private
+   */
+  this.color_ = color;
+};
+
+/** type {gamebuilder.games.reversi.PieceColor} */
+gamebuilder.games.reversi.PieceColor.WHITE =
+    new gamebuilder.games.reversi.PieceColor('white');
+
+/** type {gamebuilder.games.reversi.PieceColor} */
+gamebuilder.games.reversi.PieceColor.BLACK =
+    new gamebuilder.games.reversi.PieceColor('black');
 
 
 /**
- * Reversi {@code Piece} is simply an alias for {@code
- * gamebuilder.games.go.Piece} which we are reusing for simplicity and to
- * avoid duplication.
+ * Represents a Reversi piece.
  *
+ * @param {gamebuilder.games.reversi.PieceColor} color
  * @constructor
+ * @extends {gamebuilder.games.Piece}
  */
-gamebuilder.games.reversi.Piece = gamebuilder.games.go.Piece;
+gamebuilder.games.reversi.Piece = function(color) {
+  var base_color = /** @type {gamebuilder.games.PieceColor} */ color;
+  gamebuilder.games.Piece.call(this, base_color);
+
+  /**
+   * @type {gamebuilder.games.reversi.PieceColor}
+   * @protected
+   */
+  this.color_ = color;
+};
+
+goog.inherits(gamebuilder.games.reversi.Piece, gamebuilder.games.Piece);
+
+/**
+ * Returns the color of this piece.
+ *
+ * @return {gamebuilder.games.reversi.PieceColor}
+ */
+gamebuilder.games.reversi.Piece.prototype.color = function () {
+  return this.color_;
+};
 
 
 /**
  * @constructor
- * @extends {gamebuilder.games.go.BoardNxN}
+ * @extends {gamebuilder.games.BoardNxN}
  */
 gamebuilder.games.reversi.Board = function() {
-  gamebuilder.games.go.BoardNxN.call(this, 8);
+  gamebuilder.games.BoardNxN.call(this, 8);
 };
 
 goog.inherits(gamebuilder.games.reversi.Board,
-              gamebuilder.games.go.BoardNxN);
+              gamebuilder.games.BoardNxN);
+
+/**
+ * Returns the piece (if any) at the given coordinates.
+ *
+ * @param {Array.<number>} coords board-relative coordinates
+ * @return {?gamebuilder.games.reversi.Piece} the piece at the given
+ *     coordinates.
+ */
+gamebuilder.games.reversi.Board.prototype.getPieceAtCoords = function(coords) {
+  var piece = /** @type {?gamebuilder.games.reversi.Piece} */
+      (this.getPieceAtCoords_(coords));
+  return piece;
+};
+
+/**
+ * Returns the piece (if any) at the given position.
+ *
+ * @param {string} pos position on the board using alpha-numeric notation
+ * @return {?gamebuilder.games.reversi.Piece} the piece at the given
+ *     position.
+ */
+gamebuilder.games.reversi.Board.prototype.getPieceAtPos = function(pos) {
+  var piece = /** @type {?gamebuilder.games.reversi.Piece} */
+      (this.getPieceAtPos_(pos));
+  return piece;
+};
+
+/**
+ * Places a new piece of the given color at the given position.
+ *
+ * @param {gamebuilder.games.reversi.PieceColor} color color of the piece
+ * @param {string} pos position to place piece
+ */
+gamebuilder.games.reversi.Board.prototype.setPieceColorAtPos =
+    function(color, pos) {
+  var piece = /** type {gamebuilder.games.Piece} */
+      (new gamebuilder.games.reversi.Piece(color));
+  this.setPieceAtPos_(piece, pos);
+};
 
 /**
  * Fills in the initial configuration for the start of a new game.
@@ -80,6 +152,7 @@ gamebuilder.games.reversi.Board.prototype.initForGame = function() {
  */
 gamebuilder.games.reversi.Board.prototype.placeColorAndUpdate =
     function(color, pos) {
+  // TODO: implement.
 };
 
 
