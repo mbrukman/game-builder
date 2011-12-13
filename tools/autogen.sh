@@ -96,8 +96,17 @@ case $1 in
     echo "?>"
     ;;
 
+  *.pl)
+    echo "#!/usr/bin/perl"
+    echo "#"
+    printLicenseHashComment
+    printFileCommentTemplate "#"
+    echo
+    echo "use strict;"
+    ;;
+
   *.py)
-    echo "#!/usr/bin/python2.4"
+    echo "#!/usr/bin/python"
     echo "#"
     printLicenseHashComment
     printFileCommentTemplate "#"
