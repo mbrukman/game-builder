@@ -34,11 +34,21 @@ function testValid() {
   assertLT ${MIN_LOC} $(autogen c.cpp | wc -l)
   assertLT ${MIN_LOC} $(autogen d.hpp | wc -l)
 
+  # Haskell
+  assertLT ${MIN_LOC} $(autogen c.hs | wc -l)
+
   # Java
   assertLT ${MIN_LOC} $(autogen e.java | wc -l)
 
   # Javascript
   assertLT ${MIN_LOC} $(autogen f.js | wc -l)
+
+  # Lisp
+  assertLT ${MIN_LOC} $(autogen c.lisp | wc -l)
+
+  # ML
+  assertLT ${MIN_LOC} $(autogen c.ml | wc -l)
+  assertLT ${MIN_LOC} $(autogen c.sml | wc -l)
 
   # Perl
   assertLT ${MIN_LOC} $(autogen f.pl | wc -l)

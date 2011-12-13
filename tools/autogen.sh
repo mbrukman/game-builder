@@ -67,6 +67,23 @@ case $1 in
     printFileCommentTemplate "//"
     ;;
 
+  *.hs)
+    printLicenseNonHashComment "--"
+    printFileCommentTemplate "--"
+    ;;
+
+  *.lisp)
+    printLicenseNonHashComment ";;"
+    printFileCommentTemplate ";;"
+    ;;
+
+  *.ml | *.sml)
+    echo "(*"
+    printLicenseNonHashComment " *"
+    echo " *)"
+    echo "(* ${TODO_COMMENT} *)"
+    ;;
+
   *_test.py)
     # Get the common python header without the test additions.
     readonly BASE_PY=$(echo $1 | sed 's/_test//')
