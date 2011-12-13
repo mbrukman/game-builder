@@ -32,15 +32,35 @@ readonly RUN_CLOSURE_COMPILER="${GAMEBUILDER}/tools/run_closure_compiler.sh"
 
 COMPILER_FLAGS=""
 
+# Returns the main namespace to compile for the given base filename.
+#
+# Args:
+#   $1: base name of the file to compile
+file_base_to_ns() {
+  case $1 in
+    chess_fen)
+      echo demo.chess
+      ;;
+    go_board)
+      echo demo.go.board
+      ;;
+    go_game)
+      echo demo.go.game
+      ;;
+    reversi_board)
+      echo demo.reversi.board
+      ;;
+  esac
+}
+
 # Args:
 #   $1: base file pattern for output and compiler stderr output.
-#   $2: namespace to export
 run_closure_compiler() {
   local pattern="$1"
   local output="out/${pattern}_out.js"
   local stderr="out/${pattern}.err"
 
-  local ns="$2"
+  local ns="$(file_base_to_ns $1)"
 
   echo -n "Building $output (errors in $stderr) ... "
   env GAMEBUILDER=${GAMEBUILDER} \
@@ -70,11 +90,16 @@ while getopts 'dO:' OPTION; do
        ;;
   esac
 done
+shift $((OPTIND -1))
 
-run_closure_compiler chess_fen demo.chess
-run_closure_compiler go_board demo.go.board
-run_closure_compiler go_game demo.go.game
-run_closure_compiler reversi_board demo.reversi.board
-
-echo
-echo "JS compilation complete."
+if [[ $# -eq 0 ]]; then
+  for base in chess_fen go_board go_game reversi_board; do
+    run_closure_compiler $base
+  done
+  echo
+  echo "JS compilation complete."
+else
+  for base in $@; do
+    run_closure_compiler $base
+  done
+fi
