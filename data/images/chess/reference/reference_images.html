@@ -1,0 +1,24 @@
+<html>
+  <head>
+    <title>Step-by-step process of creating chess piece images</title>
+    <style>
+      .dark { background: #007700; }
+    </style>
+  </head>
+  <body>
+    <table border=0 cellpadding=5 cellspacing=15>
+      <tr><td>Simple black outline on white background:</td></tr>
+      <tr class=dark><td><img src="1-black-on-white.png"></td></tr>
+      <tr><td>Attempt to erase the white background on anti-aliased image (note artifacts):</td></tr>
+      <tr class=dark><td><img src="2-black-on-white-transparent-bg.png"></td></tr>
+      <tr><td>Black and white (no anti-aliasing), erase the background:</td></tr>
+      <tr class=dark><td><img src="3-bw-no-aa.png"></td></tr>
+      <tr><td>Erase the black, leaving only white (no anti-aliasing):</td></tr>
+      <tr class=dark><td><img src="4-w-no-aa.png"></td></tr>
+      <tr><td>Create anti-aliased black outline on transparent background:</td></tr>
+      <tr class=dark><td><img src="5-b-outline-aa.png"></td></tr>
+      <tr><td>Create a composite of the last two images to make the final version:</td></tr>
+      <tr class=dark><td><img src="6-final.png"></td></tr>
+    </table>
+  </body>
+</html>
