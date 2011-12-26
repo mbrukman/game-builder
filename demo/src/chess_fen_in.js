@@ -30,7 +30,7 @@ demo.chess.showFenDiagrams = function() {
   var basename = document.location.href.replace(/[^\/]*$/, '');
   var my_theme = new gamebuilder.games.chess.theme.Theme(
     ['light_sq', 'dark_sq'],
-    basename + '../data/images/chess',
+    basename + '../data/images/chess/wikimedia',
     [['pawn_w.png', 'knight_w.png', 'bishop_w.png',
       'rook_w.png', 'queen_w.png', 'king_w.png'],
      ['pawn_b.png', 'knight_b.png', 'bishop_b.png',
