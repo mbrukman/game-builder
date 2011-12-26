@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-goog.provide('gamebuilder.games.chess.theme');
+goog.provide('gamebuilder.games.chess.Theme');
 
 goog.require('gamebuilder.games.chess');
 
@@ -30,7 +30,7 @@ goog.require('gamebuilder.games.chess');
  * @constructor
  * @export
  */
-gamebuilder.games.chess.theme.Theme = function(colors, images_root, images, piece_img_class) {
+gamebuilder.games.chess.Theme = function(colors, images_root, images, piece_img_class) {
   /**
    * CSS classes for the board squares, in order: [light, dark].
    * Must be of size 2.
@@ -82,7 +82,7 @@ gamebuilder.games.chess.theme.Theme = function(colors, images_root, images, piec
  * @param {gamebuilder.games.chess.SquareColor} color
  * @return {string} The CSS class of the given color.
  */
-gamebuilder.games.chess.theme.Theme.prototype.getSquareClass = function(color) {
+gamebuilder.games.chess.Theme.prototype.getSquareClass = function(color) {
   switch (color) {
     case gamebuilder.games.chess.SquareColor.LIGHT: {
       return this.colors_[0];
@@ -99,7 +99,7 @@ gamebuilder.games.chess.theme.Theme.prototype.getSquareClass = function(color) {
 /**
  * TODO: document.
  */
-gamebuilder.games.chess.theme.Theme.prototype.getPieceImageClass = function() {
+gamebuilder.games.chess.Theme.prototype.getPieceImageClass = function() {
   return this.piece_image_class_;
 };
 
@@ -109,7 +109,7 @@ gamebuilder.games.chess.theme.Theme.prototype.getPieceImageClass = function() {
  * @param {gamebuilder.games.chess.PieceColor} color
  * @param {gamebuilder.games.chess.PieceValue} value
  */
-gamebuilder.games.chess.theme.Theme.prototype.getPieceImage = function(color, value) {
+gamebuilder.games.chess.Theme.prototype.getPieceImage = function(color, value) {
   var color_index = -1;
   switch (color) {
     case gamebuilder.games.chess.PieceColor.WHITE: {
@@ -159,7 +159,7 @@ gamebuilder.games.chess.theme.Theme.prototype.getPieceImage = function(color, va
 };
 
 /**
- * @type {gamebuilder.games.chess.theme.Theme}
+ * @type {gamebuilder.games.chess.Theme}
  * @export
  */
-gamebuilder.games.chess.theme.DEFAULT_THEME = null;
+gamebuilder.games.chess.Theme.DEFAULT_THEME = null;

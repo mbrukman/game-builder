@@ -19,7 +19,7 @@
 goog.provide('demo.chess');
 
 goog.require('gamebuilder.games.chess.FEN');
-goog.require('gamebuilder.games.chess.theme');
+goog.require('gamebuilder.games.chess.Theme');
 
 /**
  * TODO: document.
@@ -28,7 +28,7 @@ goog.require('gamebuilder.games.chess.theme');
  */
 demo.chess.showFenDiagrams = function() {
   var basename = document.location.href.replace(/[^\/]*$/, '');
-  var my_theme = new gamebuilder.games.chess.theme.Theme(
+  var my_theme = new gamebuilder.games.chess.Theme(
     ['light_sq', 'dark_sq'],
     basename + '../data/images/chess/wikimedia',
     [['pawn_w.png', 'knight_w.png', 'bishop_w.png',
@@ -37,6 +37,6 @@ demo.chess.showFenDiagrams = function() {
       'rook_b.png', 'queen_b.png', 'king_b.png']],
     'piece_img');
   
-  gamebuilder.games.chess.theme.DEFAULT_THEME = my_theme;
+  gamebuilder.games.chess.Theme.DEFAULT_THEME = my_theme;
   gamebuilder.games.chess.FEN.parseAllFenInDocument();
 };

@@ -15,7 +15,7 @@
 goog.provide('gamebuilder.games.chess.ui');
 
 goog.require('gamebuilder.games.chess');
-goog.require('gamebuilder.games.chess.theme');
+goog.require('gamebuilder.games.chess.Theme');
 goog.require('gamebuilder.util');
 
 
@@ -110,7 +110,7 @@ gamebuilder.games.chess.ui.displayHtml = function(board, node) {
   board_table.style.border = '';
   board_table.style.cellPadding = board_table.cellSpacing = 0;
   // TODO: Allow user to override the default theme.
-  var theme = gamebuilder.games.chess.theme.DEFAULT_THEME;
+  var theme = gamebuilder.games.chess.Theme.DEFAULT_THEME;
   var cols = board.numCols();
   for (var i = 0; i < rows; ++i) {
     var row = board_table.insertRow(-1);
