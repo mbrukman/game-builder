@@ -42,6 +42,8 @@ $(CHESS_FEN_OUT): $(CHESS_FEN_SRC) $(CHESS_FEN_DEPS)
 	$(VERB) $(COMPILE_JS) $(COMPILE_OPTS) $(CHESS_FEN) || rm -f $(CHESS_FEN_OUT)
 
 chess: $(CHESS_FEN_OUT)
+print_chess_fen_deps:
+	$(VERB) $(CALC_DEPS) -i $(CHESS_FEN_SRC) -p $(GAMEBUILDER_SRC_JS)
 
 # Go board
 GO_BOARD = go_board
@@ -53,6 +55,8 @@ $(GO_BOARD_OUT): $(GO_BOARD_SRC) $(GO_BOARD_DEPS)
 	$(VERB) $(COMPILE_JS) $(COMPILE_OPTS) $(GO_BOARD) || rm -f $(GO_BOARD_OUT)
 
 go_board: $(GO_BOARD_OUT)
+print_go_board_deps:
+	$(VERB) $(CALC_DEPS) -i $(GO_BOARD_SRC) -p $(GAMEBUILDER_SRC_JS)
 
 # Go game
 GO_GAME = go_game
@@ -64,6 +68,8 @@ $(GO_GAME_OUT): $(GO_GAME_SRC) $(GO_GAME_DEPS)
 	$(VERB) $(COMPILE_JS) $(COMPILE_OPTS) $(GO_GAME) || rm -f $(GO_GAME_OUT)
 
 go_game: $(GO_GAME_OUT)
+print_go_game_deps:
+	$(VERB) $(CALC_DEPS) -i $(GO_GAME_SRC) -p $(GAMEBUILDER_SRC_JS)
 
 # Go: summary
 go: go_board go_game
@@ -78,3 +84,5 @@ $(REVERSI_OUT): $(REVERSI_SRC) $(REVERSI_DEPS)
 	$(VERB) $(COMPILE_JS) $(COMPILE_OPTS) $(REVERSI_BOARD) || rm -f $(REVERSI_OUT)
 
 reversi: $(REVERSI_OUT)
+print_reversi_deps:
+	$(VERB) $(CALC_DEPS) -i $(REVERSI_SRC) -p $(GAMEBUILDER_SRC_JS)
