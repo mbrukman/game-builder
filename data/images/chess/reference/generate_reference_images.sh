@@ -31,7 +31,7 @@ echo "Generating images using text: ${LABEL}"
 echo "Generating reference (black on white) ..."
 convert -font "${FONT}" -pointsize ${SIZE} \
         -strokewidth 1 -fill black -stroke none -bordercolor black label:${LABEL} \
-        1-black-on-white.png
+        "1-black-on-white.png"
 
 # Attempt to make the background transparent via fill on anti-aliased image.
 echo "Filling background on antialiased image ..."
@@ -59,4 +59,4 @@ convert -font "${FONT}" -pointsize ${SIZE} -background none \
 
 # Compose the anti-aliased black outline on top of the white-only background.
 echo "Compositing final image ..."
-convert "4-w-no-aa.png" "5-b-outline-aa.png" -composite 6-final.png
+convert "4-w-no-aa.png" "5-b-outline-aa.png" -composite "6-final.png"
