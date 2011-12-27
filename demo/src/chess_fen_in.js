@@ -25,29 +25,34 @@ goog.require('goog.Uri');
 /**
  * TODO: document.
  *
+ * @param {string} basePath
+ * @param {string} pieceStyle
+ * @return {gamebuilder.games.chess.Theme}
+ */
+function chessTheme(basePath, pieceStyle) {
+  return new gamebuilder.games.chess.Theme(
+    { 'tableClass': 'chess',
+      'squareClasses': ['light_sq', 'dark_sq'],
+      'numberCellClass': 'number',
+      'letterCellClass': 'letter',
+      'imagesRoot': basePath + '../data/images/chess/' + pieceStyle,
+      'pieceImages': [['pawn_w.png', 'knight_w.png', 'bishop_w.png',
+                       'rook_w.png', 'queen_w.png', 'king_w.png'],
+                      ['pawn_b.png', 'knight_b.png', 'bishop_b.png',
+                       'rook_b.png', 'queen_b.png', 'king_b.png']],
+      'pieceImgClass': 'piece_img' });
+}
+
+/**
+ * Parses and displays all FEN diagrams in the HTML document.
+ *
  * @export
  */
 demo.chess.showFenDiagrams = function() {
-  var basename = document.location.href.replace(/[^\/]*$/, '');
+  var basePath = document.location.href.replace(/[^\/]*$/, '');
 
-  var THEME_MERIDA = new gamebuilder.games.chess.Theme(
-    ['light_sq', 'dark_sq'],
-    basename + '../data/images/chess/merida',
-    [['pawn_w.png', 'knight_w.png', 'bishop_w.png',
-      'rook_w.png', 'queen_w.png', 'king_w.png'],
-     ['pawn_b.png', 'knight_b.png', 'bishop_b.png',
-      'rook_b.png', 'queen_b.png', 'king_b.png']],
-    'piece_img');
-
-  var THEME_WIKIMEDIA = new gamebuilder.games.chess.Theme(
-    ['light_sq', 'dark_sq'],
-    basename + '../data/images/chess/wikimedia',
-    [['pawn_w.png', 'knight_w.png', 'bishop_w.png',
-      'rook_w.png', 'queen_w.png', 'king_w.png'],
-     ['pawn_b.png', 'knight_b.png', 'bishop_b.png',
-      'rook_b.png', 'queen_b.png', 'king_b.png']],
-    'piece_img');
-
+  var THEME_MERIDA = chessTheme(basePath, 'merida');
+  var THEME_WIKIMEDIA = chessTheme(basePath, 'wikimedia');
   var THEMES = { 'merida': THEME_MERIDA,
                  'wikimedia': THEME_WIKIMEDIA };
 

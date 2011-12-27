@@ -75,28 +75,31 @@ gamebuilder.games.chess.ui.displayText = function(board, node) {
  * @param {Node} node The HTML node to attach to.
  */
 gamebuilder.games.chess.ui.displayHtml = function(board, node) {
+  var theme = gamebuilder.games.chess.Theme.DEFAULT_THEME;
+
   // TODO: create a table which contains the board and row/column labels
   // separately, so we can apply individual styles to each (e.g., border).
   // <table>
-  // <tr>
-  //   <td><table><!-- 8 -> 1 --></table></td>
-  //   <td><table><!-- The  board --></table></td>
-  // </tr>
-  // <tr>
-  //   <td><!-- Empty cell --></td>
-  //   <td><!-- a -> h --></td>
-  // </tr>
+  //   <tr>
+  //     <td><table><!-- 8 -> 1 --></table></td>
+  //     <td><table><!-- The  board --></table></td>
+  //   </tr>
+  //   <tr>
+  //     <td><!-- Empty cell --></td>
+  //     <td><!-- a -> h --></td>
+  //   </tr>
   // </table>
   var container = document.createElement('table');
   var first_row = container.insertRow(-1);
   var numbers_cell = document.createElement('td');
   var numbers_table = document.createElement('table');
   numbers_table.style.border = '';
-  numbers_table.style.cellPadding = numbers_table.cellSpacing = 0;
+  numbers_table.cellPadding = numbers_table.cellSpacing = "0";
   var rows = board.numRows();
   for (var i = 0; i < rows; ++i) {
     var row = numbers_table.insertRow(-1);
     var cell = document.createElement('td');
+    cell.className = theme.getNumberCellClass();
     cell.appendChild(document.createTextNode((rows - i).toString()));
     cell.valign = 'middle';
     row.appendChild(cell);
@@ -107,10 +110,9 @@ gamebuilder.games.chess.ui.displayHtml = function(board, node) {
   // The board itself.
   var board_cell = document.createElement('td');
   var board_table = document.createElement('table');
-  board_table.style.border = '';
-  board_table.style.cellPadding = board_table.cellSpacing = 0;
-  // TODO: Allow user to override the default theme.
-  var theme = gamebuilder.games.chess.Theme.DEFAULT_THEME;
+  board_table.className = theme.getTableClass();
+  board_table.cellPadding = board_table.cellSpacing = "0";
+
   var cols = board.numCols();
   for (var i = 0; i < rows; ++i) {
     var row = board_table.insertRow(-1);
@@ -141,9 +143,11 @@ gamebuilder.games.chess.ui.displayHtml = function(board, node) {
   // Bottom labels
   var alpha_cell = document.createElement('td');
   var alpha_table = document.createElement('table');
+  alpha_table.cellPadding = alpha_table.cellSpacing = "0";
   var alpha_row = alpha_table.insertRow(-1);
   for (var i = 0; i < rows; ++i) {
     var cell = document.createElement('td');
+    cell.className = theme.getLetterCellClass();
     var text = String.fromCharCode('a'.charCodeAt(0) + i);
     cell.appendChild(document.createTextNode(text));
     cell.align = 'center';

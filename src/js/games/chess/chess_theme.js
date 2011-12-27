@@ -20,17 +20,42 @@ goog.require('gamebuilder.games.chess');
 /**
  * Represents the style of the chess board.
  *
- * @param {Array.<string>} colors CSS class names, order: {light, dark}.
- * @param {string} images_root Root directory for images.
- * @param {Array.<Array.<string>>} images A 2x8 array with the format:
- *     {{white pieces}, {black pieces}}; order of pieces:
- *     pawn, knight, bishop, rook, queen, king.
- * @param {string} piece_img_class CSS class for piece images.
+ * @param {Object} theme The settings describing the theme, including CSS class
+ *     names, paths to images for the pieces, etc., with the following required
+ *     fields:
+ *     {@code tableClass}: CSS class name for the container table,
+ *     {@code squareClasses}: square CSS class names, in order: [light, dark];
+ *     {@code numberCellClass}: CSS class name for cells holding numbers;
+ *     {@code letterCellClass}: CSS class name for cells holding letters;
+ *     {@code imagesRoot}: root path for piece images;
+ *     {@code pieceImages}: a 2x8 array with the format:
+ *         {{white pieces}, {black pieces}} with the order of pieces:
+ *         pawn, knight, bishop, rook, queen, king;
+ *     {@code pieceImgClass}: CSS class for piece images.
  *
  * @constructor
  * @export
  */
-gamebuilder.games.chess.Theme = function(colors, images_root, images, piece_img_class) {
+gamebuilder.games.chess.Theme = function(theme) {
+  var throwError = function(field) {
+    throw new Error("required field '" + field + "' not found in theme: " +
+        theme);
+  };
+
+  var TABLE_CLASS = 'tableClass';
+  var SQUARE_CLASSES = 'squareClasses';
+  var NUMBER_CELL_CLASS = 'numberCellClass';
+  var LETTER_CELL_CLASS = 'letterCellClass';
+  var IMAGES_ROOT = 'imagesRoot';
+  var PIECE_IMAGES = 'pieceImages';
+  var PIECE_IMG_CLASS = 'pieceImgClass';
+
+  /**
+   * @type {string}
+   * @private
+   */
+  this.tableClass_ = theme[TABLE_CLASS] || throwError(TABLE_CLASS);
+
   /**
    * CSS classes for the board squares, in order: [light, dark].
    * Must be of size 2.
@@ -38,10 +63,28 @@ gamebuilder.games.chess.Theme = function(colors, images_root, images, piece_img_
    * @type {Array.<string>}
    * @private
    */
-  this.colors_ = colors;
-  if (colors.length != 2) {
+  this.squareClasses_ = theme[SQUARE_CLASSES] || throwError(SQUARE_CLASSES);
+  if (this.squareClasses_.length != 2) {
     throw new Error("`colors' should be an array of size 2");
   }
+
+  /**
+   * CSS class for cells containing row numbers.
+   *
+   * @type {string}
+   * @private
+   */
+  this.numberCellClass_ = theme[NUMBER_CELL_CLASS] ||
+      throwError(NUMBER_CELL_CLASS);
+
+  /**
+   * CSS class for cells containing column letters.
+   *
+   * @type {string}
+   * @private
+   */
+  this.letterCellClass_ = theme[LETTER_CELL_CLASS] ||
+      throwError(LETTER_CELL_CLASS);
 
   /**
    * Root directory for piece image files.
@@ -49,7 +92,7 @@ gamebuilder.games.chess.Theme = function(colors, images_root, images, piece_img_
    * @type {string}
    * @private
    */
-  this.images_root_ = images_root;
+  this.imagesRoot_ = theme[IMAGES_ROOT] || throwError(IMAGES_ROOT);
 
   /**
    * Array of paths to piece images.
@@ -57,7 +100,8 @@ gamebuilder.games.chess.Theme = function(colors, images_root, images, piece_img_
    * @type {Array.<Array.<string>>}
    * @private
    */
-  this.images_ = images;
+  this.pieceImages_ = theme[PIECE_IMAGES] || throwError(PIECE_IMAGES);
+  var images = this.pieceImages_;
   if (images.length != 2) {
     throw new Error("`images' should be an array of size 2");
   }
@@ -68,12 +112,22 @@ gamebuilder.games.chess.Theme = function(colors, images_root, images, piece_img_
   }
 
   /**
-   * TODO: document.
+   * CSS class of piece images.
    *
    * @type {string}
    * @private
    */
-  this.piece_image_class_ = piece_img_class;
+  this.pieceImageClass_ = theme[PIECE_IMG_CLASS] ||
+      throwError(PIECE_IMG_CLASS);
+};
+
+/**
+ * Returns the stored class name for the container table.
+ *
+ * @return {string} the name of the class.
+ */
+gamebuilder.games.chess.Theme.prototype.getTableClass = function() {
+  return this.tableClass_;
 };
 
 /**
@@ -85,10 +139,10 @@ gamebuilder.games.chess.Theme = function(colors, images_root, images, piece_img_
 gamebuilder.games.chess.Theme.prototype.getSquareClass = function(color) {
   switch (color) {
     case gamebuilder.games.chess.SquareColor.LIGHT: {
-      return this.colors_[0];
+      return this.squareClasses_[0];
     }
     case gamebuilder.games.chess.SquareColor.DARK: {
-      return this.colors_[1];
+      return this.squareClasses_[1];
     }
     default: {
       throw new Error("Invalid color: " + color);
@@ -97,10 +151,30 @@ gamebuilder.games.chess.Theme.prototype.getSquareClass = function(color) {
 };
 
 /**
- * TODO: document.
+ * Returns the stored class name for the number cells.
+ *
+ * @return {string} the name of the class.
+ */
+gamebuilder.games.chess.Theme.prototype.getNumberCellClass = function() {
+  return this.numberCellClass_;
+};
+
+/**
+ * Returns the stored class name for the letter cells.
+ *
+ * @return {string} the name of the class.
+ */
+gamebuilder.games.chess.Theme.prototype.getLetterCellClass = function() {
+  return this.letterCellClass_;
+};
+
+/**
+ * Returns the stored class name for the piece images.
+ *
+ * @return {string} the name of the class.
  */
 gamebuilder.games.chess.Theme.prototype.getPieceImageClass = function() {
-  return this.piece_image_class_;
+  return this.pieceImageClass_;
 };
 
 /**
@@ -155,7 +229,7 @@ gamebuilder.games.chess.Theme.prototype.getPieceImage = function(color, value) {
       throw new Error('Invalid piece: ' + value.str());
   }
 
-  return this.images_root_ + '/' + this.images_[color_index][piece_index];
+  return this.imagesRoot_ + '/' + this.pieceImages_[color_index][piece_index];
 };
 
 /**

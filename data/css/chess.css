@@ -1,12 +1,18 @@
-.light_sq, .dark_sq, .piece_img {
-  width: 50px;
-  height: 50px;
+table.chess {
+  border: 2px solid black;
 }
 
-.light_sq {
+td.light_sq, td.dark_sq, img.piece_img, td.number {
+  height: 50px;
+}
+td.light_sq, td.dark_sq, img.piece_img, td.letter {
+  width: 50px;
+}
+
+td.light_sq {
   background-color: #FFDB87;
 }
 
-.dark_sq {
+td.dark_sq {
   background-color: #B57713;
 }
