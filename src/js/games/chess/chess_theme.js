@@ -37,9 +37,16 @@ goog.require('gamebuilder.games.chess');
  * @export
  */
 gamebuilder.games.chess.Theme = function(theme) {
-  var throwError = function(field) {
-    throw new Error("required field '" + field + "' not found in theme: " +
-        theme);
+  /**
+   * Returns the theme field value for the given name.
+   * Throws an exception of the field is not found in the theme.
+   *
+   * @param {string} field Name of the field to retrieve.
+   */
+  var getThemeField = function(field) {
+    var value = theme[field];
+    if (typeof value != "undefined") return value;
+    throw new Error("required field '" + field + "' not found in theme: " + theme);
   };
 
   var TABLE_CLASS = 'tableClass';
@@ -54,7 +61,7 @@ gamebuilder.games.chess.Theme = function(theme) {
    * @type {string}
    * @private
    */
-  this.tableClass_ = theme[TABLE_CLASS] || throwError(TABLE_CLASS);
+  this.tableClass_ = getThemeField(TABLE_CLASS);
 
   /**
    * CSS classes for the board squares, in order: [light, dark].
@@ -63,7 +70,7 @@ gamebuilder.games.chess.Theme = function(theme) {
    * @type {Array.<string>}
    * @private
    */
-  this.squareClasses_ = theme[SQUARE_CLASSES] || throwError(SQUARE_CLASSES);
+  this.squareClasses_ = getThemeField(SQUARE_CLASSES);
   if (this.squareClasses_.length != 2) {
     throw new Error("`colors' should be an array of size 2");
   }
@@ -74,8 +81,7 @@ gamebuilder.games.chess.Theme = function(theme) {
    * @type {string}
    * @private
    */
-  this.numberCellClass_ = theme[NUMBER_CELL_CLASS] ||
-      throwError(NUMBER_CELL_CLASS);
+  this.numberCellClass_ = getThemeField(NUMBER_CELL_CLASS);
 
   /**
    * CSS class for cells containing column letters.
@@ -83,8 +89,7 @@ gamebuilder.games.chess.Theme = function(theme) {
    * @type {string}
    * @private
    */
-  this.letterCellClass_ = theme[LETTER_CELL_CLASS] ||
-      throwError(LETTER_CELL_CLASS);
+  this.letterCellClass_ = getThemeField(LETTER_CELL_CLASS);
 
   /**
    * Root directory for piece image files.
@@ -92,7 +97,7 @@ gamebuilder.games.chess.Theme = function(theme) {
    * @type {string}
    * @private
    */
-  this.imagesRoot_ = theme[IMAGES_ROOT] || throwError(IMAGES_ROOT);
+  this.imagesRoot_ = getThemeField(IMAGES_ROOT);
 
   /**
    * Array of paths to piece images.
@@ -100,7 +105,7 @@ gamebuilder.games.chess.Theme = function(theme) {
    * @type {Array.<Array.<string>>}
    * @private
    */
-  this.pieceImages_ = theme[PIECE_IMAGES] || throwError(PIECE_IMAGES);
+  this.pieceImages_ = getThemeField(PIECE_IMAGES);
   var images = this.pieceImages_;
   if (images.length != 2) {
     throw new Error("`images' should be an array of size 2");
@@ -117,8 +122,7 @@ gamebuilder.games.chess.Theme = function(theme) {
    * @type {string}
    * @private
    */
-  this.pieceImageClass_ = theme[PIECE_IMG_CLASS] ||
-      throwError(PIECE_IMG_CLASS);
+  this.pieceImageClass_ = getThemeField(PIECE_IMG_CLASS);
 };
 
 /**
