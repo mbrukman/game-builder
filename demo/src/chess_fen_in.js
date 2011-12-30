@@ -20,6 +20,7 @@ goog.provide('demo.chess');
 
 goog.require('gamebuilder.games.chess.FEN');
 goog.require('gamebuilder.games.chess.Theme');
+goog.require('gamebuilder.games.chess.ui');
 goog.require('goog.Uri');
 
 /**
@@ -44,6 +45,24 @@ function chessTheme(basePath, pieceStyle) {
 }
 
 /**
+ * Parses a FEN diagram and attaches it to the given node.
+ *
+ * @param {string} fen
+ * @param {Element} container
+ * @export
+ */
+demo.chess.parseAndDisplayFen = function(fen, container) {
+  var errors = [];
+  var board = gamebuilder.games.chess.FEN.parse(fen, errors);
+  if (board != null) {
+    container.innerHTML = '';
+    gamebuilder.games.chess.ui.displayHtml(board, container);
+  } else {
+    container.innerHTML = 'Error: ' + errors.join('<br>');
+  }
+};
+
+/**
  * Parses and displays all FEN diagrams in the HTML document.
  *
  * @export
@@ -61,5 +80,14 @@ demo.chess.showFenDiagrams = function() {
   
   gamebuilder.games.chess.Theme.DEFAULT_THEME =
       THEMES[theme_name] || THEME_MERIDA;
-  gamebuilder.games.chess.FEN.parseAllFenInDocument();
+
+  // Parse and display all FEN diagrams in the document as view-only boards.
+  var elts = document.getElementsByName('gamebuilder_chess_fen');
+  if (!gamebuilder.util.isDefAndNotNull(elts)) {
+    return;
+  }
+  for (var f = 0; f < elts.length; ++f) {
+    var container = elts[f];
+    demo.chess.parseAndDisplayFen(container.innerHTML, container);
+  }
 };

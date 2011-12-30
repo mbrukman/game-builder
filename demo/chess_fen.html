@@ -3,12 +3,29 @@
   <link rel="stylesheet" href="../data/css/chess.css" />
   <!-- Compiled from src/chess_fen_in.js via compile_js.sh -->
   <script src="out/chess_fen_out.js"></script>
+  <script>
+    function handlePageLoad() {
+      demo.chess.showFenDiagrams();
+    }
+    function handleFormSubmit() {
+      var text = document.getElementById("chessFenInput");
+      var node = document.getElementById("chess_board_container");
+      demo.chess.parseAndDisplayFen(text.value, node);
+      return false;
+    }
+  </script>
 </head>
-<body onload="demo.chess.showFenDiagrams()">
+<body onload="handlePageLoad()">
 
-<div class="gamebuilder_chess_fen">
+<div name="gamebuilder_chess_fen" id="chess_board_container">
   rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1
 </div>
+
+<form action="#" onsubmit="return handleFormSubmit();">
+  <input type=text id=chessFenInput size=70
+         value="rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1">
+  <input type=button value="Display" onclick="return handleFormSubmit();">
+</form>
 
 </body>
 </html>

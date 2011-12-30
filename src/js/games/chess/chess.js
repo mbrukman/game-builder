@@ -374,6 +374,16 @@ gamebuilder.games.chess.BoardMxN.prototype.isRowValid = function(row) {
 /**
  * TODO: document.
  *
+ * @param {number} col
+ * @return {boolean}
+ */
+gamebuilder.games.chess.BoardMxN.prototype.isColValid = function(col) {
+  return (col >= 0) && (col < this.numCols());
+};
+
+/**
+ * TODO: document.
+ *
  * @param {number} row
  * @param {number} col
  * @return {boolean}

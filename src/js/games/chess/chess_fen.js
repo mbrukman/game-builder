@@ -15,81 +15,94 @@
 goog.provide('gamebuilder.games.chess.FEN');
 
 goog.require('gamebuilder.games.chess');
-goog.require('gamebuilder.games.chess.ui');
 
 
 /**
- * @constructor
- * @export
- */
-gamebuilder.games.chess.FEN = function() {
-  /**
-   * @type {gamebuilder.games.chess.Board}
-   * @private
-   */
-  this.chess_board_ = new gamebuilder.games.chess.Board();
-};
-
-/**
- * Format is described here:
+ * The FEN format is described here:
  * http://en.wikipedia.org/wiki/Forsyth-Edwards_Notation
  *
- * Function will attempt ...
+ * This function will attempt to parse the given FEN string and return a valid
+ * chess board with pieces properly positioned, if the input were valid and
+ * parsed, or null otherwise.
  *
  * @param {string} fen The FEN for this diagram.
  * @param {Array.<string>} errors
- * @return {boolean} true if parsed correctly; false otherwise
+ * @return {?gamebuilder.games.chess.Board} a valid chess board, if parsed
+ *     correctly, or null if an error were found
  */
-gamebuilder.games.chess.FEN.prototype.parse = function(fen, errors) {
+gamebuilder.games.chess.FEN.parse = function(fen, errors) {
+  var board = new gamebuilder.games.chess.Board();
+
+  // Replace newlines with spaces.
   fen = fen.replace(/\n/g, ' ').replace(/\r/g, ' ');
+  // Replaces multiple spaces with a single space.
+  fen = fen.replace(/\s+/, ' ');
+  // Trim leading and trailing whitespace.
   fen = fen.replace(/^\s+/, '').replace(/\s+$/, '');
   if (fen.length == 0) {
     errors.push('No FEN present');
-    return false;
+    return null;
   }
   var fen_parts = fen.split(' ');
   /*
   // We currently ignore everything but the board position, so this is
   // too strict
   if (fen_parts.length != 6) {
-    return false;
+    return null;
   }
   */
   if (fen_parts.length < 1) {
     errors.push('FEN has no information');
-    return false;
+    return null;
   }
 
   var pieces = fen_parts[0];
   // Debug!
   errors.push(pieces);
   var piece_rows = pieces.split('/');
-  var rows = this.chess_board_.numRows();
+  var rows = board.numRows();
   for (var r = 0, row; row = piece_rows[r]; ++r) {
     if (r >= rows) {
       errors.push('Row ' + (r + 1) + ' is outside board size: ' + rows);
-      return false;
+      return null;
     }
     var board_col = 0;
     errors.push('row: [' + row + ']');
-    if (!this.chess_board_.isRowValid(r)) {
+    if (!board.isRowValid(r)) {
       errors.push('More data in row ' + (r + 1) +
                   ' (' + board_col + ') than the board has space (' +
-                  this.chess_board_.numRows() + ')');
-      return false;
+                  board.numRows() + ')');
+      return null;
     }
     for (var c = 0, row_char; row_char = row[c++]; /* inc. in condition */) {
+      if (!board.isColValid(board_col)) {
+        errors.push('More data in col ' + (board_col + 1) +
+                    ' (' + row_char + ') than the board has space (' +
+                    board.numCols() + ')');
+        return null;
+      }
       // Blank squares.
       if (row_char >= '1' && row_char <= '8') {
-        board_col += row_char - '0';
+        var col_inc = row_char - '0';
+        if (!board.isColValid(board_col + col_inc - 1)) {
+          errors.push('Increment ' + row_char + ' is too high; ' +
+                      'the board only has ' + board.numCols() + ' columns.');
+          return null;
+        }
+        board_col += col_inc;
       } else {
-        var single_piece =
-            gamebuilder.games.chess.Piece.createFromCharCode(row_char);
-        if (gamebuilder.util.isDefAndNotNull(single_piece)) {
-          this.chess_board_.setPiece(r, board_col++, single_piece);
+        var piece = null;
+        try {
+          piece = gamebuilder.games.chess.Piece.createFromCharCode(row_char);
+        } catch (exception) {
+          errors.push(exception);
+          return null;
+        }
+        if (gamebuilder.util.isDefAndNotNull(piece)) {
+          board.setPiece(r, board_col++, piece);
         } else {
           errors.push('Could not parse piece "' + row_char + '"');
-          return false;
+          return null;
         }
       }
     }
@@ -103,38 +116,5 @@ gamebuilder.games.chess.FEN.prototype.parse = function(fen, errors) {
   var halfmove_clock = fen_parts[4];
   var fullmove_num = fen_parts[5];
   */
-  return true;
-};
-
-/**
- * TODO: document.
- *
- * @param {Node} node
- * @private
- */
-gamebuilder.games.chess.FEN.prototype.attachDiagramToNode_ = function(node) {
-  gamebuilder.games.chess.ui.displayHtml(this.chess_board_, node);
-};
-
-/**
- * Rewrites all FEN strings present in the document in containers of CSS class
- * 'gamebuilder_chess_fen' to be proper chess diagrams.
- *
- * @export
- */
-gamebuilder.games.chess.FEN.parseAllFenInDocument = function() {
-  var elts = document.getElementsByClassName('gamebuilder_chess_fen');
-  if (!gamebuilder.util.isDefAndNotNull(elts)) {
-    return;
-  }
-  for (var f = 0, container; container = elts[f++]; /* inc. in condition */) {
-    var fen = new gamebuilder.games.chess.FEN();
-    var errors = [];
-    if (fen.parse(container.innerHTML, errors)) {
-      container.innerHTML = '';
-      fen.attachDiagramToNode_(container);
-    } else {
-      container.innerHTML = 'Error: ' + errors.join('<br>');
-    }
-  }
+  return board;
 };
