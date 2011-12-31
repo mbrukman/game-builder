@@ -1,5 +1,5 @@
 table.chess {
-  border: 2px solid black;
+  border: 3px solid black;
 }
 
 td.light_sq, td.dark_sq, img.piece_img, td.number {
