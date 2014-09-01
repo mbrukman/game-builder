@@ -1,11 +1,6 @@
 Getting Started with GameBuilder
 ================================
 
-Introduction
-------------
-
-We currently don't have any releases, so you'll need to check out the source via SVN.
-
 Current Status
 --------------
 
