@@ -1,5 +1,5 @@
-Game Builder
-------------
+GameBuilder
+===========
 
 This project aims to be a set of libraries and tools to enable users to:
 
@@ -15,3 +15,14 @@ This project aims to be a set of libraries and tools to enable users to:
 
 (d) easily create or experiment with new games or rule modifications for
     already-existing and known games.
+
+Howto
+-----
+
+See [HOWTO.md](HOWTO.md) for demos and how to get started with development and
+testing.
+
+License
+-------
+
+Apache 2.0; see [LICENSE.txt](LICENSE.txt) for details.
