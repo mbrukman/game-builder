@@ -52,9 +52,11 @@ Set up your workspace for testing:
 ```
 
 * Start the webserver (default port is 8000, you can modify it with `--port` switch):
-  ```
+
+  ```bash
   % tools/http_server.py
   ```
+
 * Open a JSUnit test file, e.g.
   [games_test.html](http://localhost:8000/third_party/jsunit/testRunner.html?testpage=/tests/js/games/games_test.html)
   in your browser
