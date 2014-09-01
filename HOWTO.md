@@ -43,13 +43,13 @@ Testing
 
 *Javascript*
 
-Set up your workspace for testing:
+* Set up your workspace for testing:
 
-```bash
-% cd gamebuilder
-# Only do this once
-% tools/setup_workspace.sh
-```
+  ```bash
+  % cd gamebuilder
+  # Only do this once
+  % tools/setup_workspace.sh
+  ```
 
 * Start the webserver (default port is 8000, you can modify it with `--port` switch):
 
@@ -60,6 +60,7 @@ Set up your workspace for testing:
 * Open a JSUnit test file, e.g.
   [games_test.html](http://localhost:8000/third_party/jsunit/testRunner.html?testpage=/tests/js/games/games_test.html)
   in your browser
+
 * Click "Run"
 
 Repeat for any other tests you may have by modifying the path to the HTML file
