@@ -19,19 +19,8 @@ You can view source of those files to see how the API is used.
 *Creating new files*
 
 Each new file must have a proper copyright and license block at the top of the
-file.  To make the process easier, we have a script `tools/autogen.sh` which
-will generate the right boilerplate according to the file extension.  Here's
-how to use it:
-
-```bash
-% tools/autogen.sh game.py > game.py
-% tools/autogen.sh game_test.py > game_test.py
-```
-
-Take a look at the script to see which file types it supports.  Note that it
-also adds some other boilerplate to some times of files depending on project
-requirements, e.g. enabling all errors in PHP or importing the file under test
-in Python unittests.
+file. Use the [`autogen`](https://github.com/mbrukman/autogen) tool which makes
+it easy to generate boilerplate license headers for new files.
 
 Testing
 -------
