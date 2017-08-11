@@ -18,20 +18,22 @@ include $(SRC)/Makefile.common
 ALL_PY = $(wildcard *.py)
 TESTS = $(wildcard *_test.py)
 
+ECHO = /bin/echo
+
 # Save test output to a file, print a message, and link to output file
 # only if the test failed.
 test: $(ALL_PY)
 	$(VERB) for t in $(TESTS); do \
-		echo -n "Testing: $${t} ... "; \
+		$(ECHO) -n "Testing: $${t} ... "; \
 		TEST_OUT=`mktemp /tmp/$${t}.XXXXXX`; \
 		./$${t} > $${TEST_OUT} 2>&1; \
 		if [[ `wc -l < $${TEST_OUT}` == 0 ]]; then \
 			rm -f $${TEST_OUT}; \
-			echo "no output: no tests defined?"; \
+			$(ECHO) "no output: no tests defined?"; \
 		elif [[ "`tail -n 1 $${TEST_OUT}`" == "OK" ]]; then \
 			rm -f $${TEST_OUT}; \
-			echo "OK."; \
+			$(ECHO) "OK."; \
 		else \
-			echo "failed, see log in $${TEST_OUT}"; \
+			$(ECHO) "failed, see log in $${TEST_OUT}"; \
 		fi \
 	done
