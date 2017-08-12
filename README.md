@@ -1,5 +1,10 @@
 # GameBuilder
 
+[![Build Status][travis-shield]][travis-link]
+
+[travis-shield]: https://travis-ci.org/mbrukman/gamebuilder.svg?branch=master
+[travis-link]: https://travis-ci.org/mbrukman/gamebuilder
+
 This project aims to be a set of libraries and tools to enable users to:
 
 1. easily create web-based diagrams (static or interactive) for the purposes of
