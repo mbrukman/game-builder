@@ -16,4 +16,4 @@ SRC = ../../src
 include $(SRC)/Makefile.common
 
 test:
-	$(VERB) ./run_all_tests.sh
+	$(VERB) ./run_all_tests.sh $(wildcard *_test.sh)

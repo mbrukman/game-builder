@@ -14,11 +14,12 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-for t in *_test.sh ; do
+for t in "$@" ; do
   echo -n "Testing ${t} ... "
   stdout="$(mktemp "/tmp/${t}.XXXXXX")"
   "./${t}" > "${stdout}" 2>&1
-  if [[ -n "$(tail -n 1 "${stdout}" | grep PASSED)" ]]; then
+  if [[ -n "$(tail -n 1 "${stdout}" | grep PASSED)" ]] ||
+     [[ "$(tail -n 1 ${stdout})" == "OK" ]]; then
     rm -f "${stdout}"
     echo "OK."
   else
