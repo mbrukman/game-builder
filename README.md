@@ -1,9 +1,9 @@
-# GameBuilder
+# Game Builder
 
 [![Build Status][travis-shield]][travis-link]
 
-[travis-shield]: https://travis-ci.org/mbrukman/gamebuilder.svg?branch=master
-[travis-link]: https://travis-ci.org/mbrukman/gamebuilder
+[travis-shield]: https://travis-ci.org/mbrukman/game-builder.svg?branch=master
+[travis-link]: https://travis-ci.org/mbrukman/game-builder
 
 This project aims to be a set of libraries and tools to enable users to:
 
