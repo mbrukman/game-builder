@@ -6,13 +6,13 @@ Current Status
 
 The JS API is still being worked on, but here are some demos:
 
-* a [demo Go board](https://mbrukman.github.io/gamebuilder/demo/go_board.html) -
+* a [demo Go board](https://mbrukman.github.io/game-builder/demo/go_board.html) -
   interact via clicking
-* a [demo Go game](https://mbrukman.github.io/gamebuilder/demo/go_game.html) -
+* a [demo Go game](https://mbrukman.github.io/game-builder/demo/go_game.html) -
   interact via clicking (does not handle captures, scoring, or passing)
-* a [demo Reversi board](https://mbrukman.github.io/gamebuilder/demo/reversi_board.html) -
+* a [demo Reversi board](https://mbrukman.github.io/game-builder/demo/reversi_board.html) -
   interact via clicking (does not flip piece color when surrounded)
-* a [chess FEN parser](https://mbrukman.github.io/gamebuilder/demo/chess_fen.html)
+* a [chess FEN parser](https://mbrukman.github.io/game-builder/demo/chess_fen.html)
 
 You can view source of those files to see how the API is used.
 
