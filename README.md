@@ -1,9 +1,9 @@
 # Game Builder
 
-[![Build Status][travis-shield]][travis-link]
+[![Build Status][github-ci-badge]][github-ci-url]
 
-[travis-shield]: https://travis-ci.org/mbrukman/game-builder.svg?branch=master
-[travis-link]: https://travis-ci.org/mbrukman/game-builder
+[github-ci-badge]: https://github.com/mbrukman/game-builder/actions/workflows/main.yaml/badge.svg?branch=main
+[github-ci-url]: https://github.com/mbrukman/game-builder/actions/workflows/main.yaml?query=branch%3Amain
 
 This project aims to be a set of libraries and tools to enable users to:
 
